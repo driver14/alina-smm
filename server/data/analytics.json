@@ -1,0 +1,42 @@
+{
+  "visits": [
+    {
+      "id": "v_1792437991517_vrg7t",
+      "timestamp": "2026-10-19T19:26:31.517Z",
+      "ip": "188.163.77.210",
+      "country": "Україна",
+      "countryCode": "",
+      "city": "Київ",
+      "region": "",
+      "flag": "🇺🇦",
+      "isp": "Kyivstar GSM",
+      "deviceType": "mobile",
+      "os": "iPhone 15 Pro (iOS 17.5)",
+      "browser": "Mobile Safari",
+      "screen": "393×852",
+      "language": "uk-UA",
+      "referrer": "Instagram Bio",
+      "path": "/",
+      "isUnique": true
+    },
+    {
+      "id": "v_1792438050649_96i14",
+      "timestamp": "2026-10-19T19:27:30.649Z",
+      "ip": "2001:861:5c41:2000:fc20:49a9:3ce3:e5c6",
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Nevers",
+      "region": "Bourgogne-Franche-Comte",
+      "flag": "🇫🇷",
+      "isp": "Bouygues Telecom SA",
+      "deviceType": "desktop",
+      "os": "Windows 10/11",
+      "browser": "Chrome",
+      "screen": "800×600",
+      "language": "en-US",
+      "referrer": "Прямий захід / Закладка",
+      "path": "/",
+      "isUnique": true
+    }
+  ]
+}

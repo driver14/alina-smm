@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #EEEBDA;
+  --color-cream-light: #F9F7F1;
+  --color-cream-card: #FFFFFF;
+  --color-cream-dark: #E2DEC9;
+  --color-navy: #141937;
+  --color-navy-light: #1E254F;
+  --color-navy-dark: #0A0D1D;
+  --color-pink: #F3C3CF;
+  --color-pink-light: #FDF2F4;
+  --color-pink-dark: #E5A9B8;
+
+  --color-bdb-black: #0E100F;
+  --color-bdb-charcoal: #171918;
+  --color-bdb-card: #1C1E1D;
+  --color-bdb-sand: #EEE9E6;
+  --color-bdb-orange: #FE4F2A;
+  --color-bdb-gold: #FFC300;
+
+  --font-sans: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-editorial: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-display: 'Oswald', 'Montserrat', -apple-system, sans-serif;
+  --font-mono-tech: 'Space Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  * {
+    border-color: rgba(20, 25, 55, 0.1);
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #EEEBDA;
+    color: #141937;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* Editorial Serif Utility */
+.font-editorial {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-style: italic;
+}
+
+.font-display {
+  font-family: 'Oswald', 'Montserrat', -apple-system, sans-serif;
+  letter-spacing: -0.015em;
+}
+
+/* Rolex-inspired luxury sheen sweep */
+@keyframes rolex-sweep {
+  0% {
+    transform: translate3d(-150%, 0, 0) rotate(25deg);
+  }
+  100% {
+    transform: translate3d(250%, 0, 0) rotate(25deg);
+  }
+}
+
+.rolex-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.rolex-sheen::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 60%,
+    transparent 100%
+  );
+  transform: translate3d(-150%, 0, 0) rotate(25deg);
+  animation: rolex-sweep 5.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+/* Rolex pearl metallic iridescent text */
+.rolex-pearl-text {
+  background: linear-gradient(135deg, #141937 0%, #2A3366 50%, #141937 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Outline text effect for stacked BDB typography */
+.text-stroke-outline {
+  -webkit-text-stroke: 1.5px rgba(20, 25, 55, 0.22);
+  color: transparent;
+}
+
+.text-stroke-outline-white {
+  -webkit-text-stroke: 1.5px rgba(238, 235, 218, 0.35);
+  color: transparent;
+}
+
+.font-mono-tech {
+  font-family: 'Space Mono', ui-monospace, monospace;
+}
+
+/* Soft, modern accent highlight for key words with smooth vertical floating animation */
+.word-highlight {
+  position: relative;
+  display: inline-block;
+  padding: 0.1em 0.38em;
+  border-radius: 0.375rem;
+  background-color: #F3C3CF;
+  color: #141937;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: word-float 3.4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.word-highlight-navy {
+  position: relative;
+  display: inline-block;
+  padding: 0.1em 0.38em;
+  border-radius: 0.375rem;
+  background-color: rgba(243, 195, 207, 0.25);
+  color: #F3C3CF;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: word-float 3.4s ease-in-out infinite 0.4s;
+  will-change: transform;
+}
+
+/* Smooth organic vertical float ("будто ходят вверх-вниз") */
+@keyframes word-float {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -5px, 0);
+  }
+}
+
+/* Luxury glint sheen on highlighted words */
+.word-highlight::after,
+.word-highlight-navy::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  animation: word-sheen 4.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+@keyframes word-sheen {
+  0%, 70% {
+    left: -150%;
+  }
+  85%, 100% {
+    left: 150%;
+  }
+}
+
+/* BDB Infinite Marquee */
+@keyframes bdb-marquee {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.animate-bdb-marquee {
+  display: flex;
+  width: max-content;
+  animation: bdb-marquee 25s linear infinite;
+  will-change: transform;
+}
+
+.animate-bdb-marquee:hover {
+  animation-play-state: paused;
+}

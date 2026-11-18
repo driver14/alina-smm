@@ -1,0 +1,57 @@
+# Elite Digital Studio & Awwwards Engineering Standards (.antigravityrules)
+# Visual & Motion Benchmarks: Rolex.com, BillionDollarBoy.com, Apple Pro
+
+## 0. МАНДАТ БЕСШОВНЫХ ПЕРЕЛИВОВ ФОНА (STRICT TRANSITION RULE)
+ЗАПРЕЩЕНО использовать резкие смены цветов блоков, серые градиентные полосы-заплатки и стандартные плоские переходы. Все переходы между секциями с разными цветами фонов должны реализовываться ТОЛЬКО через динамическую смену цвета фона главного контейнера страницы по скроллу (ScrollTrigger scrub) или через бесшовный SVG/Clip-path мофинг.
+- Сами секции обязаны иметь прозрачный фон (`bg-transparent`), если они не являются всплывающими модальными окнами.
+- Главный контейнер страницы плавно интерполирует свой `backgroundColor` по мере скролла (GSAP ScrollTrigger `scrub: 1`).
+- Запрещены искусственные серые полосы-заплатки, псевдо-градиентные плашки и нелепые закругления секций (`rounded-t-[...]`).
+- Обязательно использование `gsap.context()` в хуках React с вызовом `ctx.revert()` для чистого размонтирования и предотвращения багов.
+
+## 1. Zero AI-Slop & Anti-Template Mandate
+- STRICT BAN on default, unstyled Bootstrap/Tailwind templates (no generic `bg-white rounded-lg shadow p-6` cards, no default system buttons).
+- Every component must look bespoke, high-fashion, and meticulously designed for the brand.
+- Zero monospace typewriter brackets `[ 01 // ... ]` or wireframe labels unless explicitly part of an authentic technical instrument interface.
+- No empty visual placeholders or unrendered image frames.
+
+## 2. Typographic Sculpture & SplitText Motion
+- **Extreme Scale Contrast:** Colossal condensed grotesque headlines (`font-display`, e.g., Oswald / Bebas Neue) paired with delicate high-end editorial italic serifs (`font-editorial`, Cormorant Garamond).
+- **SplitText Reveal Protocol:** Major headlines and section titles must assemble line-by-line or word-by-word via staggered `y: 40 → 0`, `opacity: 0 → 1`, and `rotateX` 3D mask transitions upon entering viewport.
+- **Micro-Copy Discipline:** Ultra-clean, tracked sans-serif (`text-[10px]` to `text-xs`, uppercase, `tracking-[0.14em]` to `tracking-[0.2em]`). Tight leading (`leading-[0.88]` to `leading-[0.95]`).
+
+## 3. Spatial Depth, Multi-Layer Glassmorphism & WebGL
+- **Multi-Layer Glassmorphism:** Deep backdrop blur (`backdrop-blur-xl`, `backdrop-blur-2xl`), ultra-thin gradient hairline borders (`border border-white/10`, `border border-[#141937]/15`), and soft multi-stop atmospheric shadows.
+- **Rolex & BDB Luster:** Sweeping light reflections (`.rolex-sheen`), ambient pearl radial gradients, and subtle gold/blush highlights (`#EEEBDA`, `#141937`, `#F3C3CF`, `#E2C39B`).
+- **Interactive 3D / WebGL Stack (@react-three/fiber, Three.js):**
+  - Integrate interactive 3D elements (e.g. crystal prisms, floating rings, metallic orbs) that dynamically tilt and respond to cursor pointer events.
+  - Keep 3D scenes performant: low-poly optimized geometry, soft PBR studio lighting, and smooth lerping.
+
+## 4. Section Morphing, Pinning & Liquid Wipe Architecture
+- **Full-Page Pinning & Scrubbed Wipe:**
+  - Key signature sections utilize GSAP ScrollTrigger with `pin: true` and `scrub: 1`.
+  - When scrolling, subsequent sections smoothly transition via dynamic container background interpolation or mask transforms.
+- **Dynamic Background Theme Transition:**
+  - Smoothly interpolate the global viewport background between Beige (`#F5F0E6`) and Deep Navy (`#0B1021`) as sections scroll into active focus.
+- **GSAP React Context Requirement:**
+  - All GSAP animations in React MUST use `@gsap/react` `useGSAP()` or `gsap.context(() => { ... }, containerRef)` inside `useLayoutEffect` / `useEffect`.
+  - ALWAYS call `ctx.revert()` in cleanup to guarantee zero memory leaks or selector clashes during React StrictMode mounts.
+
+## 5. Micro-Interactions & Custom Magnetic Cursor
+- **Fluid Magnetic Cursor:**
+  - Interactive cursor that tracks mouse movement with smooth spring damping.
+  - Morphing states:
+    - Default: 8px luminous dot + trailing smooth circle ring.
+    - Hover on interactive CTA / links: expands with `mix-blend-mode: difference`, magnetic absorption, and scale `1.6-2.2x`.
+    - Hover on case slides / visual reels: expands into a pill displaying `DRAG` / `EXPLORE`.
+- **Haptic Feedback:** Lightweight tactile pulses (`triggerHaptic`) on every interaction, mode toggle, and slide change.
+
+## 6. Generative Asset Prompt Policy (Midjourney v6 / Flux.1 Pro)
+- When generating visual assets, photography, or marketing mockups for the brand:
+  - Generate ultra-detailed prompts in dark luxury editorial aesthetics.
+  - Specify 35mm / 85mm prime lens, Hasselblad H6D, soft studio key light, deep sculptural shadows, cinematic color grading, hyper-realistic skin and fabric textures.
+  - Palette constraint: Midnight Navy, Ivory Paper Cream, Soft Rose Pearl, Brushed Platinum.
+
+## 7. Full Autonomy & Verification
+- Lead Full-Stack Engineer mode: independent technical decisions, zero cheating, zero hallucination.
+- Verify every build via `npm run build` and visual rendering via Puppeteer headless screenshots.
+- DO NOT deploy to production/remote servers unless explicitly commanded by the user.

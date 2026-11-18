@@ -1,127 +1,58 @@
-import { useState, useEffect } from 'react'
-import { LanguageProvider, useLanguage } from './context/LanguageContext'
-import { trackSiteVisitor, trackVisitorInteraction } from './services/visitorTracker'
-import { Navbar } from './components/Navbar'
-import { Hero } from './components/Hero'
-import { StatsBar } from './components/StatsBar'
-import { Philosophy } from './components/Philosophy'
-import { Services } from './components/Services'
-import { CasesGallery } from './components/CasesGallery'
-import { InteractiveCalculator } from './components/InteractiveCalculator'
-import { AboutAlina } from './components/AboutAlina'
-import { FAQ } from './components/FAQ'
-import { Footer } from './components/Footer'
-import { BookingModal } from './components/BookingModal'
-import { AmbientSpotlight } from './components/AmbientSpotlight'
-import { KineticSite } from './components/v2/KineticSite'
+import { useState, lazy, Suspense } from 'react'
+import { LanguageProvider } from './context/LanguageContext'
 import { BdbSite } from './components/bdb/BdbSite'
-import { VersionSwitcher, type SiteVersion } from './components/VersionSwitcher'
+import type { SiteVersion } from './components/VersionSwitcher'
 import { SmoothScrollProvider } from './providers/SmoothScrollProvider'
 
-function ClassicSite() {
-  const { t } = useLanguage()
-  const [isBookingOpen, setIsBookingOpen] = useState(false)
-  const [selectedService, setSelectedService] = useState('')
-  const [bookingNote, setBookingNote] = useState('')
+// Alternative concepts are review-only: split into separate chunks so the
+// production (BDB) experience never downloads them.
+const ClassicSite = lazy(() => import('./components/ClassicSite'))
+const KineticSite = lazy(() => import('./components/v2/KineticSite').then((m) => ({ default: m.KineticSite })))
+const VersionSwitcher = lazy(() => import('./components/VersionSwitcher').then((m) => ({ default: m.VersionSwitcher })))
 
-  useEffect(() => {
-    trackSiteVisitor()
-  }, [])
-
-  const handleOpenBooking = (serviceTitle?: string, note?: string) => {
-    setSelectedService(serviceTitle || t.bookingModal.serviceOptions[0])
-    setBookingNote(note || '')
-    setIsBookingOpen(true)
-    trackVisitorInteraction('opened_booking_modal', serviceTitle || 'Default')
-  }
-
-  const handleCloseBooking = () => {
-    setIsBookingOpen(false)
-  }
-
-  return (
-    <div className="min-h-screen bg-[#EEEBDA] text-[#141937] flex flex-col font-sans selection:bg-[#F3C3CF] selection:text-[#141937] relative overflow-x-clip">
-      {/* 60fps Ambient Spotlight & Vitality Background Orbs */}
-      <AmbientSpotlight />
-
-      {/* Navigation */}
-      <Navbar onOpenBooking={handleOpenBooking} />
-
-      {/* Main Content Sections */}
-      <main className="flex-1">
-        {/* 1. Hero Section with Alina's Portrait */}
-        <Hero onOpenBooking={() => handleOpenBooking()} />
-
-        {/* 2. Key Metrics & 60fps Running Marquee */}
-        <StatsBar />
-
-        {/* 3. Methodology & Core Philosophy: Why Traditional SMM fails vs Our System */}
-        <Philosophy />
-
-        {/* 4. 3 Distinct Case Blocks with 5-10 Slide Galleries */}
-        <CasesGallery />
-
-        {/* 5. 4 Core Services Grid */}
-        <Services onSelectService={(service) => handleOpenBooking(service)} />
-
-        {/* 6. Interactive Diagnostic Tool */}
-        <InteractiveCalculator
-          onRecommendService={(service, details) => handleOpenBooking(service, details)}
-        />
-
-        {/* 7. Who is Alina Voloshyna (Personal Photos, Brand & Principles) */}
-        <AboutAlina onOpenBooking={() => handleOpenBooking()} />
-
-        {/* 8. Frequently Asked Questions (FAQ) */}
-        <FAQ />
-      </main>
-
-      {/* Footer */}
-      <Footer onOpenBooking={() => handleOpenBooking()} />
-
-      {/* Lead Generation & Booking Modal */}
-      <BookingModal
-        isOpen={isBookingOpen}
-        onClose={handleCloseBooking}
-        initialService={selectedService || t.bookingModal.serviceOptions[0]}
-        initialNote={bookingNote}
-      />
-    </div>
-  )
+function readRequestedVersion(): SiteVersion | null {
+  if (typeof window === 'undefined') return null
+  const v = new URLSearchParams(window.location.search).get('v')
+  if (v === 'classic') return 'classic'
+  if (v === 'kinetic' || v === 'luxe' || v === 'v2') return 'kinetic'
+  if (v === 'bdb' || v === 'v3') return 'bdb'
+  return null
 }
 
 export function App() {
+  const requested = readRequestedVersion()
+  // The concept switcher is an internal review tool: visible in dev, or when a
+  // reviewer explicitly opens a concept via ?v=… . Public visitors always get BDB.
+  const showSwitcher = import.meta.env.DEV || requested !== null
+
   const [version, setVersion] = useState<SiteVersion>(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search)
-      const v = urlParams.get('v')
-      if (v === 'classic') return 'classic'
-      if (v === 'kinetic' || v === 'luxe' || v === 'v2') return 'kinetic'
-      if (v === 'bdb' || v === 'v3') return 'bdb'
-      const saved = localStorage.getItem('alina_site_concept') as SiteVersion | null
+    if (requested) return requested
+    if (!showSwitcher) return 'bdb'
+    try {
+      const saved = localStorage.getItem('alina_site_concept')
       if (saved === 'classic' || saved === 'kinetic' || saved === 'bdb') return saved
+    } catch {
+      /* storage unavailable */
     }
     return 'bdb'
   })
 
   const handleVersionChange = (newV: SiteVersion) => {
     setVersion(newV)
-    if (typeof window !== 'undefined') {
+    try {
       localStorage.setItem('alina_site_concept', newV)
+    } catch {
+      /* storage unavailable */
     }
   }
 
   return (
     <SmoothScrollProvider>
       <LanguageProvider>
-        {version === 'bdb' ? (
-          <BdbSite />
-        ) : version === 'kinetic' ? (
-          <KineticSite />
-        ) : (
-          <ClassicSite />
-        )}
-        <VersionSwitcher version={version} onChange={handleVersionChange} />
+        <Suspense fallback={<div className="min-h-screen bg-[#EEEBDA]" />}>
+          {version === 'bdb' ? <BdbSite /> : version === 'kinetic' ? <KineticSite /> : <ClassicSite />}
+          {showSwitcher && <VersionSwitcher version={version} onChange={handleVersionChange} />}
+        </Suspense>
       </LanguageProvider>
     </SmoothScrollProvider>
   )

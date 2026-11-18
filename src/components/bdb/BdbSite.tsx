@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { trackSiteVisitor, trackVisitorInteraction } from '../../services/visitorTracker'
-import { BdbPreloader } from './BdbPreloader'
 import { BdbNavbar } from './BdbNavbar'
 import { BdbHero } from './BdbHero'
 import { BdbExpertise } from './BdbExpertise'
@@ -42,70 +41,62 @@ export const BdbSite: React.FC = () => {
   return (
     <div 
       id="site-canvas" 
-      className="min-h-screen bg-transparent text-[#141937] flex flex-col font-sans selection:bg-[#F3C3CF] selection:text-[#141937] relative overflow-x-clip"
+      className="min-h-screen flex flex-col relative overflow-x-clip"
     >
-      {/* 00. Dedicated Hardware-Accelerated Liquid Canvas Layer */}
-      <div
-        id="site-bg-canvas"
-        className="fixed inset-0 pointer-events-none -z-10 will-change-[background-color]"
-        style={{ backgroundColor: '#EEEBDA' }}
-        aria-hidden="true"
-      />
-      
-      {/* 00. Interactive Magnetic Luxury Cursor (Awwwards Grade) */}
+      <a href="#main-content" className="skip-link">Перейти до змісту</a>
+
+      {/* Custom cursor (fine pointers only) */}
       <CustomCursor />
 
-      {/* 00. Dynamic Background Theme Controller (Alternating Light ⟷ Dark Sections) */}
+      {/* Navbar theme sync — sections own their solid backgrounds */}
       <DynamicBackgroundController />
 
-      {/* 00. Luxury Logo Intro Preloader */}
-      <BdbPreloader />
 
-      {/* 00. Minimalist Clean Navbar */}
+      {/* Navigation */}
       <BdbNavbar onOpenBooking={() => handleOpenBooking()} />
 
-      {/* Main Content Sections (All Alternating Light ⟷ Dark) */}
-      <main className="flex-1">
+      {/* Surfaces: pink → ink → paper … each section owns its background */}
+      <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
         
-        {/* 01. ГОЛОВНИЙ ЕКРАН (Light Ivory Cream) */}
+        {/* 01 Hero — pink */}
         <BdbHero onOpenBooking={() => handleOpenBooking()} />
 
-        {/* 02. ДОСВІД ТА ЕКСПЕРТИЗА (Dark Deep Navy - Interactive Telemetry Console) */}
+        {/* 02 Expertise — ink */}
         <BdbExpertise />
 
-        {/* 02.5 СИСТЕМНА АРХІТЕКТУРА МАРКЕТИНГУ (Light Ivory Cream) */}
+        {/* 02.5 Philosophy — paper */}
         <BdbStackedManifesto onOpenBooking={() => handleOpenBooking()} />
 
-        {/* 02.6 ІНТЕРАКТИВНЕ КОЛЕСО НАВІГАЦІЇ (Dark Deep Navy - No Lines, Pure Clean Typography) */}
+        {/* 02.6 System vectors drum — ink */}
         <BdbInteractiveWheel onOpenBooking={(service, note) => handleOpenBooking(service, note)} />
 
-        {/* 03. МІЙ ПІДХІД (Light Ivory Cream - Kinetic Expanding Pillars) */}
+        {/* 03 Approach — paper */}
         <BdbApproach />
 
-        {/* 04. З ЯКИМИ ЗАПИТАМИ Я ПРАЦЮЮ (Dark Deep Navy) */}
-        <BdbInquiries onOpenBooking={() => handleOpenBooking()} />
+        {/* 04 Inquiries — ink */}
+        <BdbInquiries onOpenBooking={(service, note) => handleOpenBooking(service, note)} />
 
-        {/* 05. ЯК Я БУДУЮ МАРКЕТИНГОВУ СИСТЕМУ (Light Ivory Cream) */}
+        {/* 05 Methodology — paper */}
         <BdbMethodology />
 
-        {/* 06. КЕЙСИ ТА РЕЗУЛЬТАТИ (Dark Deep Navy - Straight Cuts, No Text-Obscuring Overlay, Isolated Wheel) */}
+        {/* 06 Cases — ink */}
         <BdbWorks onOpenBooking={(service, note) => handleOpenBooking(service, note)} />
 
-        {/* 07. ПОСЛУГИ ТА ВАРТІСТЬ (Light Ivory Cream - Spectrum Spectrum Rows) */}
+        {/* 07 Services — paper */}
         <BdbCapabilities onOpenBooking={(service, note) => handleOpenBooking(service, note)} />
 
-        {/* 08. ПРО МЕНЕ ТА КОМАНДУ (Dark Deep Navy - Asymmetrical Fashion Editorial) */}
+        {/* 08 About — pink + ink */}
         <BdbAbout onOpenBooking={(service, note) => handleOpenBooking(service, note)} />
 
-        {/* 09. ЯК ВІДБУВАЄТЬСЯ СПІВПРАЦЯ (Light Ivory Cream) */}
+        {/* 09 Process — paper */}
         <BdbProcess />
 
-        {/* 10. FAQ (Dark Deep Navy - Zero Sparkles, Straight Cuts) */}
+        {/* 10 FAQ — ink */}
         <BdbFaq />
 
       </main>
 
-      {/* 11. ФІНАЛЬНИЙ БЛОК & ФУТЕР (Dark Deep Navy) */}
+      {/* Closing CTA (pink) + footer (ink) */}
       <BdbFooter onOpenBooking={(service, note) => handleOpenBooking(service, note)} />
 
       {/* Unified Lead Generation Modal */}

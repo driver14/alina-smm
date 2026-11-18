@@ -1,100 +1,55 @@
 import React, { useEffect } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
-
-const LIGHT_BG = '#EEEBDA'
-const DARK_BG = '#0B1021'
+/**
+ * Navigation theme sync.
+ *
+ * Every section paints its own solid surface, so contrast is guaranteed at any
+ * scroll position. This controller only reports which surface sits directly
+ * under the fixed header, by observing a 1px band near the top of the viewport,
+ * and writes it to <html data-nav-theme="light|dark|accent">.
+ */
+const NAV_PROBE_Y = 30
 
 export const DynamicBackgroundController: React.FC = () => {
   useEffect(() => {
-    const bgCanvas = document.getElementById('site-bg-canvas') || document.body
+    const root = document.documentElement
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('section[data-theme], footer[data-theme]'))
+    if (!sections.length) return
 
-    const ctx = gsap.context(() => {
-      const sections = Array.from(document.querySelectorAll<HTMLElement>('section[data-theme], footer[data-theme]'))
-      if (!sections.length) return
+    const apply = (theme: string | null) => {
+      root.dataset.navTheme = theme ?? 'light'
+    }
+    apply(sections[0].getAttribute('data-theme'))
 
-      // Initial state
-      bgCanvas.style.backgroundColor = LIGHT_BG
-      let activeTheme = 'light'
+    let observer: IntersectionObserver | null = null
+    const build = () => {
+      observer?.disconnect()
+      const bottom = Math.max(0, window.innerHeight - NAV_PROBE_Y - 1)
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) apply(entry.target.getAttribute('data-theme'))
+          }
+        },
+        { rootMargin: `-${NAV_PROBE_Y}px 0px -${bottom}px 0px`, threshold: 0 },
+      )
+      sections.forEach((s) => observer!.observe(s))
+    }
 
-      sections.forEach((sec, idx) => {
-        const theme = sec.getAttribute('data-theme') || 'light'
-        const targetBg = theme === 'dark' ? DARK_BG : LIGHT_BG
+    build()
+    let resizeTimer = 0
+    const onResize = () => {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(build, 150)
+    }
+    window.addEventListener('resize', onResize)
 
-        const prevSec = idx > 0 ? sections[idx - 1] : null
-        const prevTheme = prevSec ? (prevSec.getAttribute('data-theme') || 'light') : 'light'
-        const fromBg = prevTheme === 'dark' ? DARK_BG : LIGHT_BG
-
-        if (fromBg !== targetBg) {
-          const bgInterp = gsap.utils.interpolate(fromBg, targetBg)
-
-          ScrollTrigger.create({
-            trigger: sec,
-            start: 'top 85%',
-            end: 'top 25%',
-            scrub: 0.6, // Ultra-responsive, smooth damping
-            onUpdate: (self) => {
-              bgCanvas.style.backgroundColor = bgInterp(self.progress)
-
-              const newTheme = self.progress > 0.45 ? theme : prevTheme
-              if (newTheme !== activeTheme) {
-                activeTheme = newTheme
-                if (newTheme === 'dark') {
-                  document.documentElement.classList.add('theme-dark-active')
-                } else {
-                  document.documentElement.classList.remove('theme-dark-active')
-                }
-              }
-            },
-            onLeave: () => {
-              bgCanvas.style.backgroundColor = targetBg
-            },
-            onLeaveBack: () => {
-              bgCanvas.style.backgroundColor = fromBg
-            },
-            onRefresh: (self) => {
-              if (self.progress >= 1) {
-                bgCanvas.style.backgroundColor = targetBg
-              }
-            }
-          })
-        } else {
-          ScrollTrigger.create({
-            trigger: sec,
-            start: 'top 60%',
-            end: 'bottom 40%',
-            onEnter: () => {
-              bgCanvas.style.backgroundColor = targetBg
-              if (theme !== activeTheme) {
-                activeTheme = theme
-                if (theme === 'dark') {
-                  document.documentElement.classList.add('theme-dark-active')
-                } else {
-                  document.documentElement.classList.remove('theme-dark-active')
-                }
-              }
-            },
-            onEnterBack: () => {
-              bgCanvas.style.backgroundColor = targetBg
-              if (theme !== activeTheme) {
-                activeTheme = theme
-                if (theme === 'dark') {
-                  document.documentElement.classList.add('theme-dark-active')
-                } else {
-                  document.documentElement.classList.remove('theme-dark-active')
-                }
-              }
-            }
-          })
-        }
-      })
-
-      ScrollTrigger.refresh()
-    })
-
-    return () => ctx.revert()
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener('resize', onResize)
+      window.clearTimeout(resizeTimer)
+      delete root.dataset.navTheme
+    }
   }, [])
 
   return null

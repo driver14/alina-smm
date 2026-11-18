@@ -1,140 +1,128 @@
-import React, { useState } from 'react'
-import { CheckCircle2 } from 'lucide-react'
-import { triggerHaptic } from '../../utils/haptics'
+import React, { useEffect, useRef, useState } from 'react'
+import { Reveal, Lines } from './ui/Reveal'
+import { Section, Kicker } from './ui/Section'
 
-export const BdbProcess: React.FC = () => {
-  const [activeStep, setActiveStep] = useState(0)
-
-  const steps = [
-    {
-      num: '01',
-      title: 'Безкоштовний аудит',
-      desc: 'Знайомлюся з вашим бізнесом і соціальними мережами, аналізую поточну ситуацію, визначаю сильні сторони та точки зростання. Ділюся своїм баченням розвитку проєкту.',
-      stage: 'ЗНАЙОМСТВО & АУДИТ'
-    },
-    {
-      num: '02',
-      title: 'Брифінг',
-      desc: 'Детальніше знайомимося з бізнесом, обговорюємо цілі, завдання, особливості продукту та очікування від співпраці.',
-      stage: 'СИНХРОНІЗАЦІЯ ЦІЛЕЙ'
-    },
-    {
-      num: '03',
-      title: 'Розробка стратегії',
-      desc: 'Проводжу необхідні дослідження та формую індивідуальну маркетингову стратегію для вашого бізнесу.',
-      stage: 'СТРАТЕГІЧНИЙ ПЛАН'
-    },
-    {
-      num: '04',
-      title: 'Реалізація',
-      desc: 'Переходимо до роботи за погодженим планом. Команда виконує поставлені завдання, а я координую процеси та контролюю якість.',
-      stage: 'КОМАНДНА РОБОТА'
-    },
-    {
-      num: '05',
-      title: 'Аналітика та оптимізація',
-      desc: 'Регулярно аналізуємо показники, оцінюємо ефективність рішень і вдосконалюємо стратегію для максимальної окупності.',
-      stage: 'ОЦІНКА РЕЗУЛЬТАТІВ'
-    }
-  ]
-
-  const handleStepHover = (idx: number) => {
-    if (activeStep !== idx) {
-      triggerHaptic('light')
-      setActiveStep(idx)
-    }
+const STEPS = [
+  {
+    num: '01',
+    title: 'Безкоштовний аудит',
+    desc: 'Знайомлюся з вашим бізнесом і соціальними мережами, аналізую поточну ситуацію, визначаю сильні сторони та точки зростання. Ділюся своїм баченням розвитку проєкту.',
+    stage: 'ЗНАЙОМСТВО & АУДИТ'
+  },
+  {
+    num: '02',
+    title: 'Брифінг',
+    desc: 'Детальніше знайомимося з бізнесом, обговорюємо цілі, завдання, особливості продукту та очікування від співпраці.',
+    stage: 'СИНХРОНІЗАЦІЯ ЦІЛЕЙ'
+  },
+  {
+    num: '03',
+    title: 'Розробка стратегії',
+    desc: 'Проводжу необхідні дослідження та формую індивідуальну маркетингову стратегію для вашого бізнесу.',
+    stage: 'СТРАТЕГІЧНИЙ ПЛАН'
+  },
+  {
+    num: '04',
+    title: 'Реалізація',
+    desc: 'Переходимо до роботи за погодженим планом. Команда виконує поставлені завдання, а я координую процеси та контролюю якість.',
+    stage: 'КОМАНДНА РОБОТА'
+  },
+  {
+    num: '05',
+    title: 'Аналітика та оптимізація',
+    desc: 'Регулярно аналізуємо показники, оцінюємо ефективність рішень і вдосконалюємо стратегію для максимальної окупності.',
+    stage: 'ОЦІНКА РЕЗУЛЬТАТІВ'
   }
+]
+
+/** 09 — Process: vertical timeline; the rail fills and numbers ink in as you scroll. */
+export const BdbProcess: React.FC = () => {
+  const listRef = useRef<HTMLOListElement>(null)
+  const railRef = useRef<HTMLSpanElement>(null)
+  const [reached, setReached] = useState(-1)
+
+  useEffect(() => {
+    const list = listRef.current
+    if (!list) return
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const rect = list.getBoundingClientRect()
+      const mid = window.innerHeight * 0.55
+      const p = Math.min(1, Math.max(0, (mid - rect.top) / Math.max(1, rect.height)))
+      if (railRef.current) railRef.current.style.transform = `scaleY(${p})`
+      const items = Array.from(list.children) as HTMLElement[]
+      let idx = -1
+      items.forEach((el, i) => {
+        if (el.getBoundingClientRect().top < mid) idx = i
+      })
+      setReached((prev) => (prev === idx ? prev : idx))
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [])
 
   return (
-    <section 
-      id="process" 
-      data-theme="light"
-      className="relative z-20 py-24 sm:py-36 bg-transparent text-[#141937] overflow-hidden text-left"
-    >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 mb-16 border-b border-[#141937]/10">
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-3 mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#141937]/60">
-              <span className="w-2 h-2 rounded-full bg-[#141937]" />
-              <span>09 • ЯК ВІДБУВАЄТЬСЯ СПІВПРАЦЯ</span>
-            </div>
-            <h2 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight text-[#141937] leading-[1.02]">
-              Зрозумілий процес <br />
-              <span className="font-editorial normal-case text-[#141937] italic font-normal">
-                від знайомства до результату.
+    <Section id="process" theme="paper" labelledBy="process-title" className="section-y">
+      <div className="wrap grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-16">
+        <Reveal className="lg:col-span-5">
+          <div className="lg:sticky" style={{ top: 'calc(var(--header-h) + 40px)' }}>
+            <Kicker index="09" className="mb-8">
+              Як відбувається співпраця
+            </Kicker>
+            <h2 id="process-title">
+              <span className="t-display block">
+                <Lines lines={['Зрозумілий', 'процес']} />
+              </span>
+              <span className="t-serif-xl block mt-2">
+                <Lines start={2} lines={['від знайомства', 'до результату.']} />
               </span>
             </h2>
+            <p className="fade-up t-ui opacity-60 mt-10" style={{ ['--i' as string]: 4 } as React.CSSProperties}>
+              Прозорість та зрозумілість на кожному етапі
+            </p>
           </div>
+        </Reveal>
 
-          <div className="text-xs font-semibold uppercase tracking-wider text-[#141937]/50">
-            5 ПОСЛІДОВНИХ ЕТАПІВ
-          </div>
-        </div>
-
-        {/* Monolithic Kinetic Journey Rail (Straight cuts) */}
-        <div className="border border-[#141937]/15 rounded-none overflow-hidden bg-white/70 backdrop-blur-sm divide-y xl:divide-y-0 xl:divide-x divide-[#141937]/15 shadow-xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5">
-          {steps.map((st, idx) => {
-            const isActive = activeStep === idx
-
-            return (
-              <div
-                key={st.num}
-                onMouseEnter={() => handleStepHover(idx)}
-                onClick={() => handleStepHover(idx)}
-                className={`p-8 sm:p-9 flex flex-col justify-between transition-all duration-300 cursor-pointer relative group ${
-                  isActive ? 'bg-[#141937] text-white shadow-2xl' : 'hover:bg-white text-[#141937]'
-                }`}
-              >
-                {/* Active indicator */}
-                <div 
-                  className={`absolute top-0 inset-x-0 h-1 bg-[#F3C3CF] transition-opacity duration-300 ${
-                    isActive ? 'opacity-100' : 'opacity-0'
-                  }`} 
-                />
-
-                <div>
-                  <div className="flex items-center justify-between pb-4 mb-6 border-b border-current/10">
-                    <span className={`font-display text-3xl sm:text-4xl font-black ${
-                      isActive ? 'text-[#F3C3CF]' : 'text-[#141937]'
-                    }`}>
-                      {st.num}
-                    </span>
-                    <span className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                      isActive ? 'bg-white/15 text-[#EEEBDA]' : 'bg-[#141937]/5 text-[#141937]/70'
-                    }`}>
-                      {st.stage}
-                    </span>
+        <div className="lg:col-span-7 relative">
+          <span aria-hidden="true" className="absolute left-0 top-0 bottom-0 w-px bg-ink/15" />
+          <span
+            ref={railRef}
+            aria-hidden="true"
+            className="absolute left-0 top-0 bottom-0 w-[2px] -ml-px bg-ink origin-top"
+            style={{ transform: 'scaleY(0)' }}
+          />
+          <ol ref={listRef} className="space-y-16 sm:space-y-24">
+            {STEPS.map((step, i) => {
+              const on = i <= reached
+              return (
+                <li key={step.num} className="pl-8 sm:pl-14 grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-x-10 gap-y-4">
+                  <span
+                    className={`font-display font-black leading-[0.8] tracking-[-0.04em] transition-colors duration-500 ${on ? 'text-ink' : 'text-ink/15'}`}
+                    style={{ fontSize: 'clamp(88px, 10vw, 160px)' }}
+                  >
+                    {step.num}
+                  </span>
+                  <div className="sm:pt-3">
+                    <p className="t-ui opacity-60">{step.stage}</p>
+                    <h3 className="t-display-m mt-3">{step.title}</h3>
+                    <p className="t-body-l mt-4 opacity-80 max-w-[520px]">{step.desc}</p>
                   </div>
-
-                  <h3 className="font-display text-xl sm:text-2xl font-black uppercase tracking-tight mb-3">
-                    {st.title}
-                  </h3>
-
-                  <p className={`text-xs sm:text-sm leading-relaxed font-normal ${
-                    isActive ? 'text-[#EEEBDA]/90' : 'text-[#141937]/75'
-                  }`}>
-                    {st.desc}
-                  </p>
-                </div>
-
-                <div className="pt-6 mt-8 border-t border-current/10 flex items-center justify-between text-xs font-semibold uppercase tracking-wider opacity-60 group-hover:opacity-100 transition-opacity">
-                  <span>{isActive ? 'АКТИВНИЙ КРОК' : 'ЕТАП СПІВПРАЦІ'}</span>
-                  <CheckCircle2 className={`w-3.5 h-3.5 ${isActive ? 'text-[#F3C3CF]' : 'text-[#141937]'}`} />
-                </div>
-              </div>
-            )
-          })}
+                </li>
+              )
+            })}
+          </ol>
         </div>
-
-        {/* Bottom Process Note */}
-        <div className="mt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-semibold uppercase tracking-wider text-[#141937]/60">
-          <span>ПРОЗОРІСТЬ ТА ЗРОЗУМІЛІСТЬ НА КОЖНОМУ ЕТАПІ</span>
-          <span className="text-[#141937]">АЛІНА ВОЛОШИНА | SMM & MARKETING</span>
-        </div>
-
       </div>
-    </section>
+    </Section>
   )
 }

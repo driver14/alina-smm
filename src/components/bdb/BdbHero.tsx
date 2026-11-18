@@ -1,273 +1,174 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { ArrowUpRight, Send, Globe, ShieldCheck, Users, TrendingUp } from 'lucide-react'
+import { useReducedMotion } from 'framer-motion'
+import { Pause, Play } from 'lucide-react'
 import { triggerHaptic } from '../../utils/haptics'
-import { SplitTextReveal } from '../SplitTextReveal'
-import { Hero3dObject } from '../3d/Hero3dObject'
-import { useSmoothScroll } from '../../providers/SmoothScrollProvider'
+import { Reveal, Lines } from './ui/Reveal'
 
 interface BdbHeroProps {
   onOpenBooking: () => void
 }
 
 const HERO_PHOTOS = [
-  { src: '/photos/alina-flowers.jpg', alt: 'Alina Voloshyna — Aesthetics' },
-  { src: '/photos/alina-editorial.jpg', alt: 'Alina Voloshyna — Strategist' },
-  { src: '/photos/alina-barcelona.jpg', alt: 'Alina Voloshyna — International' },
-  { src: '/photos/alina-work-process.jpg', alt: 'Alina Voloshyna — System & Analytics' }
+  { src: '/photos/alina-flowers.jpg', alt: 'Аліна Волошина з букетом квітів' },
+  { src: '/photos/alina-editorial.jpg', alt: 'Аліна Волошина — редакційний портрет' },
+  { src: '/photos/alina-barcelona.jpg', alt: 'Аліна Волошина в Барселоні' },
+  { src: '/photos/alina-work-process.jpg', alt: 'Аліна Волошина за роботою над стратегією' },
+]
+
+const FACTS = ['3 ринки: США • Європа • Україна', '3+ роки в SMM', '1 власна команда', 'ROMI до 10.2x']
+
+const MARQUEE_ITEMS = [
+  'SMM-стратегія',
+  'Таргетована реклама',
+  'Маркетингова система',
+  'Власна команда спеціалістів',
+  'Довгострокове партнерство',
+  'Результат замість припущень',
 ]
 
 export const BdbHero: React.FC<BdbHeroProps> = ({ onOpenBooking }) => {
-  const reelRef = useRef<HTMLDivElement>(null)
-  const [isPaused, setIsPaused] = useState(false)
-  const { lenis } = useSmoothScroll()
-  const scrollY = useMotionValue(0)
-  const smoothY = useSpring(scrollY, { stiffness: 220, damping: 28 })
+  const reelRef = useRef<HTMLElement>(null)
+  const prefersReducedMotion = useReducedMotion()
+  const [userPaused, setUserPaused] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+  const [inView, setInView] = useState(true)
 
-  // Slow, calm, continuous cinematic drift (resets seamlessly)
-  useEffect(() => {
-    let animId: number
-    let lastTime = performance.now()
-
-    const step = (time: number) => {
-      const delta = (time - lastTime) / 1000
-      lastTime = time
-
-      if (!isPaused) {
-        const current = scrollY.get()
-        let next = current - delta * 20
-        // Reset seamlessly every cycle of 4 photos (approx 1440px)
-        if (next <= -1440) {
-          next += 1440
-        }
-        scrollY.set(next)
-      }
-      animId = requestAnimationFrame(step)
-    }
-
-    animId = requestAnimationFrame(step)
-    return () => cancelAnimationFrame(animId)
-  }, [isPaused, scrollY])
-
-  // Wheel interaction: scroll photos smoothly with ZERO movement on the parent page
+  // Pause the drift while the reel is off-screen
   useEffect(() => {
     const el = reelRef.current
-    if (!el) return
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault()
-      e.stopPropagation()
-
-      const current = scrollY.get()
-      let next = current - e.deltaY * 0.75
-      if (next > 0) next = -1440 + next
-      if (next < -2880) next = next + 1440
-      scrollY.set(next)
-    }
-
-    el.addEventListener('wheel', handleWheel, { passive: false })
-    return () => el.removeEventListener('wheel', handleWheel)
-  }, [scrollY])
-
-  const handleMouseEnter = () => {
-    setIsPaused(true)
-    lenis?.stop()
-  }
-
-  const handleMouseLeave = () => {
-    setIsPaused(false)
-    lenis?.start()
-  }
+  const isRunning = !prefersReducedMotion && !userPaused && !isHovered && inView
 
   const handleCta = () => {
     triggerHaptic('medium')
     onOpenBooking()
   }
 
-  // Duplicate for seamless infinite loop
-  const displayPhotos = [...HERO_PHOTOS, ...HERO_PHOTOS, ...HERO_PHOTOS]
+  // Two identical sets + translateY(-50%) = seamless loop at any item height
+  const displayPhotos = [...HERO_PHOTOS, ...HERO_PHOTOS]
 
   return (
-    <section 
-      id="hero" 
-      data-theme="light"
-      className="relative pt-24 pb-0 md:pt-28 md:pb-0 overflow-hidden bg-transparent text-[#141937] border-b border-[#141937]/10"
+    <section
+      id="hero"
+      data-theme="accent"
+      aria-labelledby="hero-title"
+      className="surface-pink relative flex flex-col lg:min-h-[100svh]"
+      style={{ paddingTop: 'var(--header-h)' }}
     >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        
-        {/* Main 2-Column Grid: Left Content tight & Right Reel bounded to left block height */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch py-6 sm:py-10">
-          
-          {/* Left Column (approx 60% width): Colossal Typography & Action Cluster */}
-          <div className="lg:col-span-7 flex flex-col justify-between space-y-8 text-left">
-            
-            <div className="space-y-6">
-              
-              {/* Top Subhead Bar with Interactive 3D WebGL Prism */}
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-[#141937]/60">
-                  <span className="w-2 h-2 rounded-full bg-[#141937]" />
-                  <span>АЛІНА ВОЛОШИНА • SMM & MARKETING</span>
-                </div>
+      <div className="relative flex-1 grid grid-cols-1 lg:grid-cols-12">
+        {/* Copy */}
+        <Reveal className="wrap lg:col-span-9 flex flex-col justify-between gap-12 pt-8 sm:pt-12 lg:pt-10 pb-12 lg:pb-14">
+          <h1
+            id="hero-title"
+            className="font-display font-black uppercase text-ink leading-[0.86] tracking-[-0.03em]"
+            style={{ fontSize: 'clamp(44px, 6.3vw, 104px)' }}
+          >
+            <Lines
+              lines={[
+                'Не просто веду',
+                'соціальні мережі.',
+                'Будую маркетингову',
+                <>
+                  <span className="t-mix">Систему®</span> для бізнесу.
+                </>,
+              ]}
+            />
+          </h1>
 
-                <div className="hidden sm:flex items-center gap-2">
-                  <Hero3dObject className="w-12 h-12" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#141937]/40">
-                    3D PRISM
-                  </span>
-                </div>
-              </div>
-
-              {/* Colossal Display Headline with Staggered SplitText Assembly (Immediate animation) */}
-              <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-[5.25rem] font-black uppercase tracking-tight leading-[1.0] sm:leading-[0.98] text-[#141937]">
-                <SplitTextReveal immediate tag="span">НЕ ПРОСТО ВЕДУ</SplitTextReveal> <br />
-                <SplitTextReveal immediate tag="span" delay={0.08}>СОЦІАЛЬНІ МЕРЕЖІ.</SplitTextReveal> <br />
-                <SplitTextReveal immediate tag="span" delay={0.16}>БУДУЮ МАРКЕТИНГОВУ</SplitTextReveal> <br />
-                <span className="font-editorial normal-case text-[#141937] italic font-normal">
-                  Систему®
-                </span>{' '}
-                <SplitTextReveal immediate tag="span" delay={0.24}>ДЛЯ БІЗНЕСУ.</SplitTextReveal>
-              </h1>
-
-              {/* Exact User Text Descriptions */}
-              <div className="space-y-3 pt-1 text-[#141937]/80 text-base sm:text-lg max-w-xl font-normal leading-relaxed">
-                <p className="font-bold text-[#141937]">
-                  SMM-стратегія, контент і таргетована реклама для бізнесів та експертів у США, Європі й Україні.
-                </p>
-                <p className="text-sm sm:text-base text-[#141937]/75">
-                  Об’єдную маркетинг, аналітику та командну роботу, щоб перетворювати соціальні мережі на ефективний інструмент залучення клієнтів.
-                </p>
-              </div>
-
-              {/* Refined Luxury Button Cluster (Rolex & BDB Aesthetic) */}
-              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-                <button
-                  type="button"
-                  onClick={handleCta}
-                  className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 sm:py-4.5 rounded-full bg-[#141937] hover:bg-[#1E254F] text-[#EEEBDA] text-xs font-extrabold uppercase tracking-[0.16em] transition-all duration-300 shadow-xl shadow-[#141937]/15 hover:scale-[1.02] cursor-pointer rolex-sheen"
-                >
-                  <span>Отримати стратегічний розбір</span>
-                  <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
-                </button>
-
-                <a
-                  href="https://t.me/smmbyvlsh"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2.5 px-7 py-4 sm:py-4.5 rounded-full border border-[#141937]/25 bg-white/60 hover:bg-white text-[#141937] text-xs font-extrabold uppercase tracking-[0.16em] transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
-                >
-                  <Send className="w-3.5 h-3.5 text-[#141937]" />
-                  <span>TELEGRAM</span>
-                </a>
-              </div>
-
+          <div className="grid gap-8 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end max-w-[880px]">
+            <div className="fade-up space-y-3 max-w-[520px]" style={{ ['--i' as string]: 4 } as React.CSSProperties}>
+              <p className="t-body-l font-medium">
+                SMM-стратегія, контент і таргетована реклама для бізнесів та експертів у США, Європі й Україні.
+              </p>
+              <p className="text-[15px] leading-[1.45] opacity-75">
+                Об’єдную маркетинг, аналітику та командну роботу, щоб перетворювати соціальні мережі на ефективний
+                інструмент залучення клієнтів.
+              </p>
             </div>
 
-            {/* Bottom Trust Strip */}
-            <div className="pt-6 border-t border-[#141937]/10 flex flex-wrap items-center gap-6 sm:gap-8 text-xs font-bold uppercase tracking-wider text-[#141937]/65">
-              <div className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-[#141937]" />
-                <span>3 РИНКИ: США • ЄВРОПА • УКРАЇНА</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#141937]" />
-                <span>3+ РОКИ В SMM</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#141937]" />
-                <span>1 ВЛАСНА КОМАНДА</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[#141937]" />
-                <span>ROMI ДО 10.2X</span>
-              </div>
+            <div className="fade-up flex flex-wrap items-center gap-x-6 gap-y-4" style={{ ['--i' as string]: 5 } as React.CSSProperties}>
+              <button type="button" onClick={handleCta} className="btn-tag btn-tag--lg">
+                Отримати стратегічний розбір
+              </button>
+              <a href="https://t.me/smmbyvlsh" target="_blank" rel="noopener noreferrer" className="t-ui link-u">
+                Telegram ↗
+              </a>
             </div>
-
           </div>
+        </Reveal>
 
-          {/* Right Column (approx 40%): Strictly Bounded to left block height, Straight cut (rounded-none), Minimalist vertical label */}
-          <div className="lg:col-span-5 min-h-0 flex flex-col justify-stretch">
-            
-            <div
-              ref={reelRef}
-              data-lenis-prevent
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              className="relative w-full h-[500px] sm:h-[580px] lg:h-full min-h-[480px] max-h-[640px] rounded-none overflow-hidden border border-[#141937]/20 bg-[#141937] shadow-2xl select-none cursor-ns-resize group"
-            >
-              {/* Minimalist Vertical Editorial Label along the block (BDB style) */}
-              <div className="absolute top-6 right-3.5 z-20 pointer-events-none select-none flex flex-col items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-white/70" />
-                <span className="text-[9px] font-sans font-bold uppercase tracking-[0.28em] text-white/75 [writing-mode:vertical-rl]">
-                  ALINA VOLOSHYNA • REEL 2026
-                </span>
-              </div>
-
-              {/* Continuous Drifting Track controlled by smooth spring */}
-              <motion.div
-                style={{ y: smoothY }}
-                className="w-full flex flex-col"
+        {/* Edge-to-edge editorial photo reel */}
+        <figure
+          ref={reelRef}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          aria-label="Фотографії Аліни Волошиної"
+          className="relative m-0 lg:col-span-3 h-[72svh] min-h-[420px] lg:h-auto lg:min-h-0 overflow-hidden bg-ink"
+        >
+          <div className="reel-track absolute inset-x-0 top-0 flex flex-col" data-running={isRunning ? 'true' : 'false'}>
+            {displayPhotos.map((photo, i) => (
+              <div
+                key={i}
+                aria-hidden={i >= HERO_PHOTOS.length ? true : undefined}
+                className="relative w-full aspect-[4/5] shrink-0 overflow-hidden"
               >
-                {displayPhotos.map((photo, pIdx) => (
-                  <div 
-                    key={pIdx}
-                    className="relative w-full h-[360px] sm:h-[390px] shrink-0 overflow-hidden border-b border-white/10"
-                  >
-                    <img
-                      src={photo.src}
-                      alt={photo.alt}
-                      className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-                      loading={pIdx < 2 ? 'eager' : 'lazy'}
-                    />
-                  </div>
-                ))}
-              </motion.div>
-
-              {/* Minimal Top & Bottom Clean Edge Shadow */}
-              <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-[#141937]/40 to-transparent pointer-events-none z-10" />
-              <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#141937]/50 to-transparent pointer-events-none z-10" />
-            </div>
-
+                <img
+                  src={photo.src}
+                  alt={i >= HERO_PHOTOS.length ? '' : photo.alt}
+                  width={800}
+                  height={1000}
+                  decoding="async"
+                  fetchPriority={i === 0 ? 'high' : undefined}
+                  loading={i < 2 ? 'eager' : 'lazy'}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
           </div>
 
-        </div>
-
+          {!prefersReducedMotion && (
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light')
+                setUserPaused((p) => !p)
+              }}
+              aria-pressed={userPaused}
+              aria-label={userPaused ? 'Відновити рух фотографій' : 'Зупинити рух фотографій'}
+              className="btn-tag btn-tag--light absolute left-4 bottom-4 z-10 !text-[13px]"
+            >
+              {userPaused ? <Play className="w-3 h-3" aria-hidden="true" /> : <Pause className="w-3 h-3" aria-hidden="true" />}
+              {userPaused ? 'Play' : 'Stop'}
+            </button>
+          )}
+        </figure>
       </div>
 
-      {/* Running Marquee Ticker (ZERO STARS, PURE CLEAN TYPOGRAPHY) */}
-      <div className="border-t border-[#141937]/15 bg-[#E2DEC9]/50 py-3.5 overflow-hidden">
-        <div className="animate-bdb-marquee flex gap-8 whitespace-nowrap text-xs font-bold uppercase tracking-[0.16em] text-[#141937]">
-          <span>SMM-СТРАТЕГІЯ</span>
-          <span className="opacity-40">/</span>
-          <span>ТАРГЕТОВАНА РЕКЛАМА</span>
-          <span className="opacity-40">/</span>
-          <span>3+ РОКИ ДОСВІДУ</span>
-          <span className="opacity-40">/</span>
-          <span>США • ЄВРОПА • УКРАЇНА</span>
-          <span className="opacity-40">/</span>
-          <span>МАРКЕТИНГОВА СИСТЕМА</span>
-          <span className="opacity-40">/</span>
-          <span>ВЛАСНА КОМАНДА СПЕЦІАЛІСТІВ</span>
-          <span className="opacity-40">/</span>
-          <span>ДОВГОСТРОКОВЕ ПАРТНЕРСТВО</span>
-          <span className="opacity-40">/</span>
-          <span>РЕЗУЛЬТАТ ЗАМІСТЬ ПРИПУЩЕНЬ</span>
-          <span className="opacity-40">/</span>
-          <span>SMM-СТРАТЕГІЯ</span>
-          <span className="opacity-40">/</span>
-          <span>ТАРГЕТОВАНА РЕКЛАМА</span>
-          <span className="opacity-40">/</span>
-          <span>3+ РОКИ ДОСВІДУ</span>
-          <span className="opacity-40">/</span>
-          <span>США • ЄВРОПА • УКРАЇНА</span>
-          <span className="opacity-40">/</span>
-          <span>МАРКЕТИНГОВА СИСТЕМА</span>
-          <span className="opacity-40">/</span>
-          <span>ВЛАСНА КОМАНДА СПЕЦІАЛІСТІВ</span>
-          <span className="opacity-40">/</span>
-          <span>ДОВГОСТРОКОВЕ ПАРТНЕРСТВО</span>
-          <span className="opacity-40">/</span>
-          <span>РЕЗУЛЬТАТ ЗАМІСТЬ ПРИПУЩЕНЬ</span>
+      {/* Facts strip + marquee */}
+      <div className="border-t border-ink/20">
+        <ul className="wrap grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-2 py-4 t-ui">
+          {FACTS.map((f) => (
+            <li key={f}>{f}</li>
+          ))}
+        </ul>
+        <div className="border-t border-ink/20 overflow-hidden py-3 bg-ink text-pink" aria-hidden="true">
+          <div className="marquee">
+            {[0, 1].map((dup) => (
+              <div key={dup} className="flex shrink-0">
+                {MARQUEE_ITEMS.map((item) => (
+                  <span key={item} className="font-display font-extrabold uppercase text-[22px] leading-none px-6 whitespace-nowrap">
+                    {item}
+                    <span className="t-mix font-normal pl-12">/</span>
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

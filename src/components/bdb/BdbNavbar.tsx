@@ -1,225 +1,199 @@
-import React, { useState, useEffect } from 'react'
-import { ArrowUpRight, Menu, X, Send } from 'lucide-react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { triggerHaptic } from '../../utils/haptics'
-
-const InstagramIcon = ({ className = 'w-3.5 h-3.5' }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-  </svg>
-)
 
 interface BdbNavbarProps {
   onOpenBooking: () => void
 }
 
+type NavTheme = 'light' | 'dark' | 'accent'
+
+const NAV_LINKS = [
+  { href: '#expertise', label: 'Досвід', long: 'Досвід та експертиза' },
+  { href: '#philosophy', label: 'Філософія', long: 'Філософія маркетингу' },
+  { href: '#approach', label: 'Підхід', long: 'Мій підхід' },
+  { href: '#cases', label: 'Кейси', long: 'Кейси та результати' },
+  { href: '#services', label: 'Послуги', long: 'Послуги та вартість' },
+  { href: '#about', label: 'Про мене', long: 'Про мене та команду' },
+  { href: '#faq', label: 'FAQ', long: 'Часті запитання' },
+]
+
+const SURFACE: Record<NavTheme, string> = {
+  light: 'bg-paper text-ink',
+  dark: 'bg-ink text-paper',
+  accent: 'bg-pink text-ink',
+}
+
 export const BdbNavbar: React.FC<BdbNavbarProps> = ({ onOpenBooking }) => {
   const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileOpen, setIsMobileOpen] = useState(false)
-  const [isDark, setIsDark] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [theme, setTheme] = useState<NavTheme>('accent')
+  const toggleRef = useRef<HTMLButtonElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    let lastScrolled = false
-    const handleScroll = () => {
-      const scrolled = window.scrollY > 25
-      if (scrolled !== lastScrolled) {
-        lastScrolled = scrolled
-        setIsScrolled(scrolled)
-      }
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
+    const onScroll = () => setIsScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
 
-    const checkDark = () => {
-      const active = document.documentElement.classList.contains('theme-dark-active')
-      setIsDark((prev) => (prev !== active ? active : prev))
+    const root = document.documentElement
+    const read = () => {
+      const t = root.dataset.navTheme
+      setTheme(t === 'dark' || t === 'light' || t === 'accent' ? t : 'accent')
     }
-    checkDark()
-    const observer = new MutationObserver(checkDark)
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    read()
+    const mo = new MutationObserver(read)
+    mo.observe(root, { attributes: true, attributeFilter: ['data-nav-theme'] })
 
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-      observer.disconnect()
+      window.removeEventListener('scroll', onScroll)
+      mo.disconnect()
     }
   }, [])
 
-  useEffect(() => {
-    if (isMobileOpen) {
-      document.body.style.overflow = 'hidden'
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') setIsMobileOpen(false)
-      }
-      window.addEventListener('keydown', handleKeyDown)
-      return () => {
-        document.body.style.overflow = ''
-        window.removeEventListener('keydown', handleKeyDown)
-      }
-    } else {
-      document.body.style.overflow = ''
-    }
-  }, [isMobileOpen])
+  const close = useCallback((restoreFocus = true) => {
+    setIsOpen(false)
+    if (restoreFocus) toggleRef.current?.focus()
+  }, [])
 
-  const handleCtaClick = () => {
+  // Mobile overlay: scroll lock, Esc, focus trap
+  useEffect(() => {
+    if (!isOpen) return
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const panel = panelRef.current
+    panel?.querySelector<HTMLElement>('a, button')?.focus()
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        close()
+        return
+      }
+      if (e.key !== 'Tab' || !panel) return
+      const items = Array.from(panel.querySelectorAll<HTMLElement>('a, button'))
+      const all = [toggleRef.current!, ...items]
+      const first = all[0]
+      const last = all[all.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [isOpen, close])
+
+  const handleCta = () => {
     triggerHaptic('medium')
+    setIsOpen(false)
     onOpenBooking()
   }
 
+  const surface = isOpen ? SURFACE.dark : SURFACE[theme]
+  const onDark = isOpen || theme === 'dark'
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${
-        isDark
-          ? isScrolled
-            ? 'bg-[#0B1021]/90 backdrop-blur-md border-b border-white/10 shadow-lg py-3.5'
-            : 'bg-[#0B1021]/60 backdrop-blur-xs border-b border-white/5 py-5'
-          : isScrolled
-            ? 'bg-[#EEEBDA]/95 backdrop-blur-md border-b border-[#141937]/10 shadow-xs py-3.5'
-            : 'bg-[#EEEBDA]/80 backdrop-blur-xs border-b border-[#141937]/5 py-5'
-      }`}
+      className={`fixed top-0 inset-x-0 z-40 transition-[background-color,color,height] duration-300 ${surface}`}
+      style={{ height: isScrolled ? 'calc(var(--header-h) - 12px)' : 'var(--header-h)' }}
     >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between">
-        
-        {/* Brand Wordmark (Rolex / BDB style: clean, confident, minimal) */}
-        <a 
-          href="#" 
-          className="flex items-center gap-2.5 text-left group cursor-pointer"
-          onClick={() => triggerHaptic('light')}
+      <div className="wrap h-full flex items-center justify-between gap-6">
+        {/* Stacked wordmark */}
+        <a
+          href="#hero"
+          aria-label="Аліна Волошина — на початок сторінки"
+          onClick={() => setIsOpen(false)}
+          className="font-display font-black uppercase leading-[0.82] tracking-[-0.02em] text-[15px] sm:text-[17px] whitespace-nowrap"
         >
-          <div className="flex flex-col">
-            <span className={`font-black text-base sm:text-lg tracking-tight leading-none uppercase transition-colors duration-300 ${
-              isDark ? 'text-white' : 'text-[#141937]'
-            }`}>
-              АЛІНА ВОЛОШИНА
-            </span>
-            <span className={`text-[10px] tracking-[0.2em] uppercase font-bold mt-1 transition-colors duration-300 ${
-              isDark ? 'text-[#F3C3CF]' : 'text-[#141937]/60'
-            }`}>
-              SMM & MARKETING
-            </span>
-          </div>
+          <span className="block">Аліна</span>
+          <span className="block">Волошина</span>
         </a>
 
-        {/* Minimalist Navigation */}
-        <nav className={`hidden lg:flex items-center gap-7 xl:gap-8 text-[12px] font-bold uppercase tracking-[0.14em] transition-colors duration-300 ${
-          isDark ? 'text-[#EEEBDA]/75' : 'text-[#141937]/75'
-        }`}>
-          <a href="#hero" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-[#141937]'}`}>ГОЛОВНА</a>
-          <a href="#expertise" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-[#141937]'}`}>ДОСВІД</a>
-          <a href="#philosophy" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-[#141937]'}`}>ФІЛОСОФІЯ</a>
-          <a href="#approach" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-[#141937]'}`}>ПІДХІД</a>
-          <a href="#cases" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-[#141937]'}`}>КЕЙСИ</a>
-          <a href="#services" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-[#141937]'}`}>ПОСЛУГИ</a>
-          <a href="#about" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-[#141937]'}`}>ПРО МЕНЕ</a>
-          <a href="#faq" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-[#141937]'}`}>FAQ</a>
+        <nav aria-label="Основна навігація" className="hidden lg:block">
+          <ul className="flex items-center gap-7 xl:gap-9">
+            {NAV_LINKS.map((l) => (
+              <li key={l.href}>
+                <a href={l.href} className="t-ui link-h">
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
         </nav>
 
-        {/* Right Action Cluster */}
-        <div className="flex items-center gap-3">
-          
-          {/* Social Icons */}
-          <div className="hidden sm:flex items-center gap-2">
-            <a
-              href="https://instagram.com/smmbyvlsh"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram profile"
-              className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all ${
-                isDark
-                  ? 'border-white/20 bg-white/5 text-white hover:bg-white hover:text-[#0B1021]'
-                  : 'border-[#141937]/15 bg-white/60 text-[#141937] hover:bg-[#141937] hover:text-[#EEEBDA]'
-              }`}
-            >
-              <InstagramIcon className="w-4 h-4" />
-            </a>
-            <a
-              href="https://t.me/smmbyvlsh"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Telegram direct"
-              className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all ${
-                isDark
-                  ? 'border-white/20 bg-white/5 text-white hover:bg-white hover:text-[#0B1021]'
-                  : 'border-[#141937]/15 bg-white/60 text-[#141937] hover:bg-[#141937] hover:text-[#EEEBDA]'
-              }`}
-            >
-              <Send className="w-3.5 h-3.5" />
-            </a>
-          </div>
-
-          {/* Minimalist Solid Pill Button */}
+        <div className="flex items-center gap-4">
           <button
             type="button"
-            onClick={handleCtaClick}
-            className={`group relative px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs font-bold uppercase tracking-[0.14em] transition-all duration-200 flex items-center gap-1.5 cursor-pointer rolex-sheen ${
-              isDark
-                ? 'bg-white hover:bg-[#EEEBDA] text-[#0B1021] shadow-lg shadow-white/5'
-                : 'bg-[#141937] hover:bg-[#1E254F] text-[#EEEBDA] shadow-md shadow-[#141937]/15'
-            }`}
+            onClick={handleCta}
+            className={`btn-tag ${onDark ? 'btn-tag--light' : ''}`}
           >
-            <span>СТРАТЕГІЧНИЙ РОЗБІР</span>
-            <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <span className="sm:hidden">Розбір</span>
+            <span className="hidden sm:inline">Стратегічний розбір</span>
           </button>
 
-          {/* Mobile Menu Toggle */}
           <button
+            ref={toggleRef}
             type="button"
-            onClick={() => setIsMobileOpen(!isMobileOpen)}
-            aria-label="Toggle navigation menu"
-            className={`lg:hidden p-2 rounded-lg border transition-colors cursor-pointer ${
-              isDark
-                ? 'border-white/20 text-white hover:bg-white/10'
-                : 'border-[#141937]/15 text-[#141937] hover:bg-black/5'
-            }`}
+            onClick={() => setIsOpen((o) => !o)}
+            aria-label={isOpen ? 'Закрити меню' : 'Відкрити меню'}
+            aria-expanded={isOpen}
+            aria-controls="site-menu"
+            className="lg:hidden relative w-11 h-11 -mr-2 flex flex-col items-center justify-center gap-[6px] cursor-pointer"
           >
-            {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <span
+              aria-hidden="true"
+              className={`block w-6 h-[2px] bg-current transition-transform duration-300 ${isOpen ? 'translate-y-[4px] rotate-45' : ''}`}
+            />
+            <span
+              aria-hidden="true"
+              className={`block w-6 h-[2px] bg-current transition-transform duration-300 ${isOpen ? '-translate-y-[4px] -rotate-45' : ''}`}
+            />
           </button>
         </div>
-
       </div>
 
-      {/* Mobile Menu Dropdown */}
-      {isMobileOpen && (
-        <div className={`lg:hidden border-b px-6 py-6 space-y-3 ${
-          isDark ? 'bg-[#0B1021] border-white/15' : 'bg-[#EEEBDA] border-[#141937]/15'
-        }`}>
-          <nav className={`flex flex-col space-y-3 text-sm font-bold uppercase tracking-wider ${
-            isDark ? 'text-white' : 'text-[#141937]'
-          }`}>
-            <a href="#hero" onClick={() => setIsMobileOpen(false)} className={`py-2 border-b flex justify-between ${isDark ? 'border-white/10' : 'border-[#141937]/10'}`}>
-              <span>ГОЛОВНА</span>
-              <ArrowUpRight className="w-4 h-4 opacity-40" />
+      {/* Full-screen mobile menu */}
+      <div
+        id="site-menu"
+        ref={panelRef}
+        hidden={!isOpen}
+        className="lg:hidden fixed inset-x-0 bottom-0 bg-ink text-paper overflow-y-auto overscroll-contain"
+        style={{ top: 'calc(var(--header-h) - 1px)' }}
+      >
+        <nav aria-label="Мобільна навігація" className="wrap pt-6 pb-10 flex flex-col min-h-full">
+          <ul>
+            {NAV_LINKS.map((l, i) => (
+              <li key={l.href} className="border-b border-paper/15">
+                <a
+                  href={l.href}
+                  onClick={() => close(false)}
+                  className="flex items-baseline justify-between gap-4 py-3.5"
+                >
+                  <span className="t-display-m leading-none">{l.long}</span>
+                  <span className="t-ui opacity-50">{String(i + 1).padStart(2, '0')}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto pt-10 flex flex-wrap items-center gap-x-6 gap-y-3 t-ui">
+            <a href="https://t.me/smmbyvlsh" target="_blank" rel="noopener noreferrer" className="link-u">
+              Telegram
             </a>
-            <a href="#expertise" onClick={() => setIsMobileOpen(false)} className={`py-2 border-b flex justify-between ${isDark ? 'border-white/10' : 'border-[#141937]/10'}`}>
-              <span>ДОСВІД ТА ЕКСПЕРТИЗА</span>
-              <ArrowUpRight className="w-4 h-4 opacity-40" />
+            <a href="https://instagram.com/smmbyvlsh" target="_blank" rel="noopener noreferrer" className="link-u">
+              Instagram
             </a>
-            <a href="#philosophy" onClick={() => setIsMobileOpen(false)} className={`py-2 border-b flex justify-between ${isDark ? 'border-white/10' : 'border-[#141937]/10'}`}>
-              <span>ФІЛОСОФІЯ МАРКЕТИНГУ</span>
-              <ArrowUpRight className="w-4 h-4 opacity-40" />
+            <a href="mailto:contact@smmbyvlsh.com" className="link-u">
+              contact@smmbyvlsh.com
             </a>
-            <a href="#approach" onClick={() => setIsMobileOpen(false)} className={`py-2 border-b flex justify-between ${isDark ? 'border-white/10' : 'border-[#141937]/10'}`}>
-              <span>МІЙ ПІДХІД</span>
-              <ArrowUpRight className="w-4 h-4 opacity-40" />
-            </a>
-            <a href="#cases" onClick={() => setIsMobileOpen(false)} className={`py-2 border-b flex justify-between ${isDark ? 'border-white/10' : 'border-[#141937]/10'}`}>
-              <span>КЕЙСИ ТА РЕЗУЛЬТАТИ</span>
-              <ArrowUpRight className="w-4 h-4 opacity-40" />
-            </a>
-            <a href="#services" onClick={() => setIsMobileOpen(false)} className={`py-2 border-b flex justify-between ${isDark ? 'border-white/10' : 'border-[#141937]/10'}`}>
-              <span>ПОСЛУГИ ТА ВАРТІСТЬ</span>
-              <ArrowUpRight className="w-4 h-4 opacity-40" />
-            </a>
-            <a href="#about" onClick={() => setIsMobileOpen(false)} className={`py-2 border-b flex justify-between ${isDark ? 'border-white/10' : 'border-[#141937]/10'}`}>
-              <span>ПРО МЕНЕ ТА КОМАНДУ</span>
-              <ArrowUpRight className="w-4 h-4 opacity-40" />
-            </a>
-            <a href="#faq" onClick={() => setIsMobileOpen(false)} className="py-2 flex justify-between">
-              <span>ЧАСТІ ЗАПИТАННЯ</span>
-              <ArrowUpRight className="w-4 h-4 opacity-40" />
-            </a>
-          </nav>
-        </div>
-      )}
+          </div>
+        </nav>
+      </div>
     </header>
   )
 }

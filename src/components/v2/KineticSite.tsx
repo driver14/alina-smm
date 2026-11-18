@@ -1,3 +1,4 @@
+import '../../styles/legacy.css'
 import React, { useState, useEffect } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { trackSiteVisitor, trackVisitorInteraction } from '../../services/visitorTracker'

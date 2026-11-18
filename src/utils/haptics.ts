@@ -48,7 +48,7 @@ class HapticsController {
    * Ideal for button presses, language switch, interactive pills.
    */
   public click() {
-    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator && navigator.userActivation?.hasBeenActive !== false) {
       try {
         navigator.vibrate(10)
       } catch {
@@ -94,7 +94,7 @@ class HapticsController {
    * Ideal for switching case gallery slides or light swipe feedback.
    */
   public slide() {
-    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator && navigator.userActivation?.hasBeenActive !== false) {
       try {
         navigator.vibrate(8)
       } catch {
@@ -139,7 +139,7 @@ class HapticsController {
    * Ideal for form submit and successful action confirmation.
    */
   public success() {
-    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator && navigator.userActivation?.hasBeenActive !== false) {
       try {
         navigator.vibrate([12, 40, 18])
       } catch {

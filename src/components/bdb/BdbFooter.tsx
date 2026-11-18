@@ -1,47 +1,51 @@
 import React, { useState, useEffect } from 'react'
-import { ArrowUpRight, Send, Mail, ArrowUp } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { triggerHaptic } from '../../utils/haptics'
-
-const InstagramIcon = ({ className = 'w-3.5 h-3.5' }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-  </svg>
-)
+import { Reveal, Lines } from './ui/Reveal'
 
 interface BdbFooterProps {
   onOpenBooking: (service?: string, note?: string) => void
+}
+
+const SECTIONS = [
+  { href: '#hero', label: 'Головний екран' },
+  { href: '#expertise', label: 'Досвід та експертиза' },
+  { href: '#philosophy', label: 'Філософія та колесо' },
+  { href: '#approach', label: 'Мій підхід' },
+  { href: '#cases', label: 'Кейси та результати' },
+  { href: '#services', label: 'Послуги та вартість' },
+  { href: '#about', label: 'Про мене та команду' },
+  { href: '#faq', label: 'FAQ' },
+]
+
+const GEO = [
+  { label: 'Україна (Київ HQ)', accent: true },
+  { label: 'США (Маямі, Флорида)', accent: false },
+  { label: 'Європа (Варшава, ЄС)', accent: false },
+]
+
+function formatKyivTime(): string {
+  try {
+    return new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Kyiv',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(new Date())
+  } catch {
+    return '—'
+  }
 }
 
 export const BdbFooter: React.FC<BdbFooterProps> = ({ onOpenBooking }) => {
   const [kyivTime, setKyivTime] = useState<string>('')
 
   useEffect(() => {
-    const updateTime = () => {
-      try {
-        const now = new Date()
-        const formatted = new Intl.DateTimeFormat('en-GB', {
-          timeZone: 'Europe/Kyiv',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false
-        }).format(now)
-        setKyivTime(formatted)
-      } catch (e) {
-        setKyivTime('15:00:00')
-      }
-    }
-    updateTime()
-    const timer = setInterval(updateTime, 1000)
-    return () => clearInterval(timer)
+    const update = () => setKyivTime(formatKyivTime())
+    update()
+    const timer = window.setInterval(update, 15000)
+    return () => window.clearInterval(timer)
   }, [])
-
-  const scrollToTop = () => {
-    triggerHaptic('light')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
 
   const handleBook = () => {
     triggerHaptic('medium')
@@ -49,157 +53,138 @@ export const BdbFooter: React.FC<BdbFooterProps> = ({ onOpenBooking }) => {
   }
 
   return (
-    <footer 
-      data-theme="dark"
-      className="bg-transparent text-[#EEEBDA] pt-24 pb-12 relative overflow-hidden text-left border-t border-white/10"
-    >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        
-        {/* Massive Call To Action Header */}
-        <div className="pb-16 border-b border-white/10">
-          <div className="flex items-center gap-3 mb-6 text-xs font-bold uppercase tracking-[0.2em] text-[#F3C3CF]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F3C3CF] animate-ping" />
-            <span>ФІНАЛЬНИЙ КРОК ДО СИСТЕМИ</span>
-          </div>
+    <>
+      {/* Closing call to action */}
+      <section id="contact" data-theme="accent" aria-labelledby="cta-title" className="surface-pink">
+        <div className="grid grid-cols-1 lg:grid-cols-12">
+          <figure className="m-0 lg:col-span-5 relative h-[60svh] lg:h-auto min-h-[380px] overflow-hidden bg-ink">
+            <img
+              src="/photos/alina-cafe.jpg"
+              alt="Аліна Волошина в кав’ярні"
+              width={682}
+              height={1024}
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </figure>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
-            <div className="lg:col-span-8 space-y-6">
-              <h2 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight text-white leading-[1.05]">
-                Ваш бізнес заслуговує на маркетинг, <br />
-                <span className="font-editorial normal-case text-[#F3C3CF] italic font-normal">
-                  який працює системно.
+          <Reveal className="lg:col-span-7 wrap section-y flex flex-col justify-between gap-14">
+            <p className="t-ui opacity-70">Фінальний крок до системи</p>
+
+            <div className="space-y-8">
+              <h2 id="cta-title" className="t-display">
+                <Lines lines={['Ваш бізнес', 'заслуговує на', 'маркетинг,']} />
+                <span className="reveal-line">
+                  <span className="t-serif-xl block normal-case" style={{ ['--i' as string]: 3 } as React.CSSProperties}>
+                    який працює <em className="italic">системно.</em>
+                  </span>
                 </span>
               </h2>
-
-              <p className="text-base sm:text-lg text-[#EEEBDA]/85 max-w-2xl leading-relaxed font-normal">
-                Розкажіть мені про свій проєкт, цілі та завдання. Разом визначимо, які інструменти допоможуть вашому бізнесу розвиватися та залучати більше клієнтів.
+              <p className="fade-up t-body-l max-w-[560px]" style={{ ['--i' as string]: 4 } as React.CSSProperties}>
+                Розкажіть мені про свій проєкт, цілі та завдання. Разом визначимо, які інструменти допоможуть вашому
+                бізнесу розвиватися та залучати більше клієнтів.
               </p>
-
-              <div className="text-xs font-bold uppercase tracking-[0.16em] text-[#F3C3CF]">
-                ПОЧНЕМО З БЕЗКОШТОВНОГО СТРАТЕГІЧНОГО РОЗБОРУ ВАШОГО ПРОЄКТУ
-              </div>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col items-start lg:items-end gap-5">
-              <button
-                type="button"
-                onClick={handleBook}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 sm:px-9 py-4.5 sm:py-5 bg-[#EEEBDA] hover:bg-white text-[#141937] text-xs sm:text-sm uppercase tracking-[0.16em] font-extrabold rounded-full transition-all hover:scale-105 cursor-pointer shadow-2xl rolex-sheen"
-              >
-                <span>Хочу отримати розбір проєкту</span>
-                <ArrowUpRight className="w-4 h-4" />
+            <div className="fade-up flex flex-wrap items-end justify-between gap-6" style={{ ['--i' as string]: 5 } as React.CSSProperties}>
+              <p className="t-ui max-w-[320px]">Почнемо з безкоштовного стратегічного розбору вашого проєкту</p>
+              <button type="button" onClick={handleBook} className="group inline-flex items-stretch cursor-pointer">
+                <span className="btn-tag btn-tag--lg !py-0 flex items-center">Хочу отримати розбір проєкту</span>
+                <span className="btn-arrow group-hover:bg-pink-deep group-hover:text-ink" aria-hidden="true">
+                  <ArrowRight className="w-5 h-5" />
+                </span>
               </button>
-              <div className="text-xs font-bold text-[#EEEBDA]/50 uppercase tracking-widest text-left lg:text-right">
-                АЛІНА ВОЛОШИНА | SMM & MARKETING
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <footer data-theme="dark" className="surface-ink">
+        <div className="wrap pt-20 sm:pt-28 pb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-16">
+            <div className="lg:col-span-4">
+              <p
+                className="font-display font-black uppercase leading-[0.84] tracking-[-0.03em]"
+                style={{ fontSize: 'clamp(56px, 5.6vw, 88px)' }}
+              >
+                Аліна
+                <br />
+                Волошина
+              </p>
+              <p className="t-serif mt-5 text-pink">SMM & Marketing</p>
+            </div>
+
+            <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
+              <div>
+                <h2 className="t-serif text-[26px] mb-6">Прямі канали зв’язку</h2>
+                <ul className="space-y-3 text-[13px]">
+                  <li>
+                    <a href="https://t.me/smmbyvlsh" target="_blank" rel="noopener noreferrer" className="link-h">
+                      Telegram · @smmbyvlsh
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://instagram.com/smmbyvlsh" target="_blank" rel="noopener noreferrer" className="link-h">
+                      Instagram · @smmbyvlsh
+                    </a>
+                  </li>
+                  <li>
+                    <a href="mailto:contact@smmbyvlsh.com" className="link-h break-all">
+                      contact@smmbyvlsh.com
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <nav aria-label="Розділи сайту">
+                <h2 className="t-serif text-[26px] mb-6">Розділи сайту</h2>
+                <ul className="space-y-2.5 text-[13px]">
+                  {SECTIONS.map((s) => (
+                    <li key={s.href}>
+                      <a href={s.href} className="link-h">
+                        {s.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+
+              <div>
+                <h2 className="t-serif text-[26px] mb-6">Географія проєктів</h2>
+                <ul className="space-y-3 text-[13px]">
+                  {GEO.map((g) => (
+                    <li key={g.label} className="flex items-center gap-2.5">
+                      <span
+                        aria-hidden="true"
+                        className={`w-2 h-2 rounded-full ${g.accent ? 'bg-pink' : 'bg-paper/40'}`}
+                      />
+                      {g.label}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="t-serif text-[26px] mb-6">Київський час</h2>
+                <p className="font-display font-black text-[44px] leading-none tracking-[-0.02em] tabular-nums">
+                  {kyivTime || '—'}
+                </p>
+                <p className="text-[13px] mt-4 opacity-70 leading-[1.45]">
+                  Відповідаємо у Telegram протягом 1-2 годин у робочі дні.
+                </p>
               </div>
             </div>
           </div>
+
+          <div className="mt-20 pt-6 border-t border-paper/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 t-ui opacity-70">
+            <p>© 2026 Аліна Волошина | SMM & Marketing. Всі права захищені.</p>
+            <a href="#hero" onClick={() => triggerHaptic('light')} className="link-u">
+              Вгору ↑
+            </a>
+          </div>
         </div>
-
-        {/* Mid Row: Navigation Links & Channels */}
-        <div className="py-16 grid grid-cols-2 md:grid-cols-4 gap-8 border-b border-white/10 text-xs font-bold uppercase tracking-wider">
-          
-          {/* Col 1: Direct Contact */}
-          <div>
-            <div className="text-[#F3C3CF] mb-4 tracking-[0.18em]">ПРЯМІ КАНАЛИ ЗВ'ЯЗКУ</div>
-            <ul className="space-y-3 font-normal">
-              <li>
-                <a
-                  href="https://t.me/smmbyvlsh"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-[#EEEBDA]/80 hover:text-white transition-colors"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>TELEGRAM • @smmbyvlsh</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://instagram.com/smmbyvlsh"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-[#EEEBDA]/80 hover:text-white transition-colors"
-                >
-                  <InstagramIcon className="w-3.5 h-3.5" />
-                  <span>INSTAGRAM • @smmbyvlsh</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:contact@smmbyvlsh.com"
-                  className="flex items-center gap-2 text-[#EEEBDA]/80 hover:text-white transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5" />
-                  <span>CONTACT@SMMBYVLSH.COM</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Col 2: Navigation */}
-          <div>
-            <div className="text-[#F3C3CF] mb-4 tracking-[0.18em]">РОЗДІЛИ САЙТУ</div>
-            <ul className="space-y-2.5 text-[#EEEBDA]/80 font-normal">
-              <li><a href="#hero" className="hover:text-white transition-colors">ГОЛОВНИЙ ЕКРАН</a></li>
-              <li><a href="#expertise" className="hover:text-white transition-colors">ДОСВІД ТА ЕКСПЕРТИЗА</a></li>
-              <li><a href="#philosophy" className="hover:text-white transition-colors">ФІЛОСОФІЯ ТА КОЛЕСО</a></li>
-              <li><a href="#approach" className="hover:text-white transition-colors">МІЙ ПІДХІД</a></li>
-              <li><a href="#cases" className="hover:text-white transition-colors">КЕЙСИ ТА РЕЗУЛЬТАТИ</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">ПОСЛУГИ ТА ВАРТІСТЬ</a></li>
-              <li><a href="#about" className="hover:text-white transition-colors">ПРО МЕНЕ ТА КОМАНДУ</a></li>
-              <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
-            </ul>
-          </div>
-
-          {/* Col 3: Coordinates */}
-          <div>
-            <div className="text-[#F3C3CF] mb-4 tracking-[0.18em]">ГЕОГРАФІЯ ПРОЄКТІВ</div>
-            <ul className="space-y-2 text-[#EEEBDA]/75 font-normal">
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#F3C3CF]" />
-                <span>УКРАЇНА (КИЇВ HQ)</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#EEEBDA]/40" />
-                <span>США (МАЯМІ, ФЛОРИДА)</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#EEEBDA]/40" />
-                <span>ЄВРОПА (ВАРШАВА, ЄС)</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Col 4: Live Time & Status */}
-          <div>
-            <div className="text-[#F3C3CF] mb-4 tracking-[0.18em]">КИЇВСЬКИЙ ЧАС</div>
-            <div className="font-display text-2xl font-black text-white mb-2 tracking-wider">
-              KYIV {kyivTime || '15:00:00'} <span className="text-xs text-[#F3C3CF] font-sans font-bold">UTC+2</span>
-            </div>
-            <div className="text-[12px] text-[#EEEBDA]/70 font-normal leading-relaxed">
-              Відповідаємо у Telegram протягом 1-2 годин у робочі дні.
-            </div>
-          </div>
-
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#EEEBDA]/60 uppercase tracking-wider font-semibold">
-          <div>
-            © 2026 АЛІНА ВОЛОШИНА | SMM & MARKETING. ВСІ ПРАВА ЗАХИЩЕНІ.
-          </div>
-
-          <button
-            onClick={scrollToTop}
-            className="flex items-center gap-2 text-[#EEEBDA]/80 hover:text-white transition-colors cursor-pointer group"
-          >
-            <span>ВГОРУ</span>
-            <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
-          </button>
-        </div>
-
-      </div>
-    </footer>
+      </footer>
+    </>
   )
 }

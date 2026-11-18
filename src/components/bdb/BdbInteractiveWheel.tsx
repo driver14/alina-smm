@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight } from 'lucide-react'
+import React, { useState, useRef, useEffect } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import { triggerHaptic } from '../../utils/haptics'
-import { useSmoothScroll } from '../../providers/SmoothScrollProvider'
+import { Section, Kicker } from './ui/Section'
 
 interface BdbInteractiveWheelProps {
   onOpenBooking: (service?: string, note?: string) => void
@@ -61,198 +60,154 @@ const WHEEL_ITEMS: WheelItem[] = [
   }
 ]
 
-export const BdbInteractiveWheel: React.FC<BdbInteractiveWheelProps> = ({ onOpenBooking }) => {
-  const [activeIndex, setActiveIndex] = useState(1) // Default to МАРКЕТИНГ
-  const wheelContainerRef = useRef<HTMLDivElement>(null)
-  const lastWheelTimeRef = useRef<number>(0)
-  const { lenis } = useSmoothScroll()
+const STEP_VH = 55 // scroll distance per vector while the drum is pinned
 
+/**
+ * 02.6 — System vectors as a vertical word drum.
+ * Desktop (fine pointer, motion allowed): the drum is sticky and the active
+ * vector follows scroll progress through the section. Everywhere else it is a
+ * plain list of buttons. Clicking a word always selects it (and on desktop
+ * scrolls to its position), so nothing depends on scroll alone.
+ */
+export const BdbInteractiveWheel: React.FC<BdbInteractiveWheelProps> = ({ onOpenBooking }) => {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [pinned, setPinned] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+  const reduce = useReducedMotion()
   const activeItem = WHEEL_ITEMS[activeIndex]
 
-  const handleSelect = useCallback((idx: number) => {
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const update = () => setPinned(mq.matches && !reduce)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [reduce])
+
+  // Map scroll progress through the tall section to the active vector
+  useEffect(() => {
+    if (!pinned) return
+    let frame = 0
+    const onScroll = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        const el = sectionRef.current
+        if (!el) return
+        const rect = el.getBoundingClientRect()
+        const travel = el.offsetHeight - window.innerHeight
+        const p = Math.min(1, Math.max(0, -rect.top / Math.max(1, travel)))
+        const idx = Math.min(WHEEL_ITEMS.length - 1, Math.floor(p * WHEEL_ITEMS.length))
+        setActiveIndex((prev) => (prev === idx ? prev : idx))
+      })
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [pinned])
+
+  const selectIdx = (idx: number) => {
     triggerHaptic('light')
     setActiveIndex(idx)
-  }, [])
-
-  const nextItem = useCallback(() => {
-    triggerHaptic('light')
-    setActiveIndex((prev) => (prev + 1) % WHEEL_ITEMS.length)
-  }, [])
-
-  const prevItem = useCallback(() => {
-    triggerHaptic('light')
-    setActiveIndex((prev) => (prev - 1 + WHEEL_ITEMS.length) % WHEEL_ITEMS.length)
-  }, [])
-
-  // Smooth wheel handling with strict Lenis isolation (prevents page jump)
-  useEffect(() => {
-    const el = wheelContainerRef.current
-    if (!el) return
-
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault()
-      e.stopPropagation()
-
-      const now = Date.now()
-      if (now - lastWheelTimeRef.current < 200) return
-
-      if (Math.abs(e.deltaY) > 12) {
-        lastWheelTimeRef.current = now
-        if (e.deltaY > 0) {
-          nextItem()
-        } else {
-          prevItem()
-        }
-      }
+    if (pinned && sectionRef.current) {
+      const el = sectionRef.current
+      const travel = el.offsetHeight - window.innerHeight
+      const top = el.getBoundingClientRect().top + window.scrollY + ((idx + 0.5) / WHEEL_ITEMS.length) * travel
+      window.scrollTo({ top, behavior: 'smooth' })
     }
-
-    el.addEventListener('wheel', handleWheel, { passive: false })
-    return () => el.removeEventListener('wheel', handleWheel)
-  }, [nextItem, prevItem])
-
-  const handleMouseEnter = () => {
-    lenis?.stop()
-  }
-
-  const handleMouseLeave = () => {
-    lenis?.start()
   }
 
   const handleBook = () => {
     triggerHaptic('medium')
     onOpenBooking(
       `Стратегічний розбір: ${activeItem.label}`,
-      `Запит через систему векторів: ${activeItem.label} — ${activeItem.headline}`
+      `Запит через систему векторів: ${activeItem.label} — ${activeItem.headline}`,
     )
   }
 
   return (
-    <section 
+    <Section
       id="wheel"
-      data-theme="dark"
-      className="relative z-20 py-24 sm:py-36 bg-transparent text-[#EEEBDA] overflow-hidden text-left"
+      theme="ink"
+      labelledBy="wheel-title"
+      ref={sectionRef}
+      style={pinned ? { height: `calc(100svh + ${WHEEL_ITEMS.length * STEP_VH}svh)` } : undefined}
     >
-      {/* Background ambient luxury pearl glow */}
-      <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#F3C3CF]/10 blur-3xl pointer-events-none" />
-
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
-        
-        {/* Top Minimalist Header without extra lines */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 mb-12">
+      <div className={pinned ? 'sticky top-0 h-[100svh] flex flex-col overflow-hidden' : 'section-y'}>
+        <div className="wrap flex items-end justify-between gap-6" style={pinned ? { paddingTop: 'calc(var(--header-h) + 32px)' } : undefined}>
           <div>
-            <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-[#F3C3CF] mb-2">
-              <span className="w-2 h-2 rounded-full bg-[#F3C3CF]" />
-              <span>АРХІТЕКТУРА МАРКЕТИНГУ</span>
+            <Kicker className="mb-4 text-pink opacity-100">Архітектура маркетингу</Kicker>
+            <h2 id="wheel-title" className="t-display-m">Ключові вектори системи</h2>
+          </div>
+          <p className="t-ui opacity-60 hidden sm:block tabular-nums">
+            {String(activeIndex + 1).padStart(2, '0')} / {String(WHEEL_ITEMS.length).padStart(2, '0')}
+          </p>
+        </div>
+
+        <div className="wrap flex-1 grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-10 items-center mt-12 lg:mt-0">
+          {/* Drum */}
+          <div className="lg:col-span-7 relative" style={pinned ? { height: '62svh' } : undefined}>
+            <ul
+              className={pinned ? 'absolute inset-x-0 top-1/2' : 'flex flex-col'}
+              style={
+                pinned
+                  ? {
+                      transform: `translate3d(0, calc(${-activeIndex} * var(--drum-row) - var(--drum-row) / 2), 0)`,
+                      transition: 'transform 700ms var(--ease-out-expo)',
+                      ['--drum-row' as string]: 'clamp(64px, 8.4vw, 124px)',
+                    } as React.CSSProperties
+                  : undefined
+              }
+            >
+              {WHEEL_ITEMS.map((item, i) => {
+                const d = Math.abs(i - activeIndex)
+                const active = d === 0
+                return (
+                  <li key={item.id} style={pinned ? { height: 'var(--drum-row)' } : undefined}>
+                    <button
+                      type="button"
+                      onClick={() => selectIdx(i)}
+                      aria-pressed={active}
+                      className={`block w-full text-left font-display font-black uppercase leading-[0.9] tracking-[-0.03em] origin-left cursor-pointer transition-[transform,opacity,color] duration-700 ${
+                        active ? 'text-paper' : 'text-paper hover:!opacity-70'
+                      }`}
+                      style={{
+                        fontSize: pinned ? 'clamp(64px, 8.4vw, 124px)' : 'clamp(44px, 12vw, 72px)',
+                        transform: pinned && !active ? 'scaleY(0.62)' : 'none',
+                        opacity: active ? 1 : pinned ? (d === 1 ? 0.28 : d === 2 ? 0.12 : 0.05) : 0.35,
+                        transitionTimingFunction: 'var(--ease-out-expo)',
+                      }}
+                    >
+                      {item.label}
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+
+          {/* Detail */}
+          <div className="lg:col-span-5 lg:pb-0 pb-4" aria-live="polite">
+            <div key={activeItem.id} className="swap-in">
+              <p className="t-ui text-pink">{activeItem.tag}</p>
+              <h3 className="t-serif-l mt-5" style={{ ['--i' as string]: 1 } as React.CSSProperties}>
+                {activeItem.headline}
+              </h3>
+              <p className="mt-6 text-[16px] leading-[1.5] opacity-75 max-w-[460px]" style={{ ['--i' as string]: 2 } as React.CSSProperties}>
+                {activeItem.desc}
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3" style={{ ['--i' as string]: 3 } as React.CSSProperties}>
+                <button type="button" onClick={handleBook} className="btn-tag btn-tag--light">
+                  Отримати стратегію
+                </button>
+                <span className="t-ui opacity-60">США • Європа • Україна</span>
+              </div>
             </div>
-            <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white">
-              КЛЮЧОВІ ВЕКТОРИ СИСТЕМИ
-            </h2>
-          </div>
-
-          <div className="text-xs font-semibold uppercase tracking-wider text-[#EEEBDA]/50">
-            06 ВЕКТОРІВ СИСТЕМИ
           </div>
         </div>
-
-        {/* 2-Column Layout (NO dividing lines, NO clunky frames, pure crystal-clear typography) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          
-          {/* Left Column: Interactive 3D Roller Stack */}
-          <div
-            ref={wheelContainerRef}
-            data-lenis-prevent
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            className="lg:col-span-6 relative select-none py-4 flex flex-col justify-center items-start cursor-pointer"
-          >
-            {WHEEL_ITEMS.map((item, idx) => {
-              const distance = idx - activeIndex
-              const isCenter = distance === 0
-              const isAdjacent = Math.abs(distance) === 1
-
-              if (Math.abs(distance) > 2) return null
-
-              return (
-                <motion.div
-                  key={item.id}
-                  onClick={() => handleSelect(idx)}
-                  animate={{
-                    scale: isCenter ? 1.05 : isAdjacent ? 0.88 : 0.74,
-                    opacity: isCenter ? 1 : isAdjacent ? 0.35 : 0.15,
-                    y: distance * 8,
-                    filter: isCenter ? 'blur(0px)' : isAdjacent ? 'blur(0.5px)' : 'blur(1.5px)'
-                  }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                  className={`font-display font-black uppercase tracking-tight transition-colors duration-200 cursor-pointer text-left leading-[0.92] my-1.5 ${
-                    isCenter
-                      ? 'text-white text-5xl sm:text-7xl md:text-8xl lg:text-[6.5rem]'
-                      : isAdjacent
-                      ? 'text-[#EEEBDA]/50 text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] hover:text-[#EEEBDA]/80'
-                      : 'text-stroke-outline text-3xl sm:text-5xl md:text-6xl lg:text-[4.5rem]'
-                  }`}
-                >
-                  <span className="inline-block relative">
-                    {item.label}
-                    {isCenter && (
-                      <motion.span
-                        layoutId="wheel-active-bullet"
-                        className="absolute -left-6 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F3C3CF] hidden sm:inline-block"
-                      />
-                    )}
-                  </span>
-                </motion.div>
-              )
-            })}
-          </div>
-
-          {/* Right Column: Pure Minimalist Editorial Typography (NO DIVIDING LINES, CLEAR FONT) */}
-          <div className="lg:col-span-6 space-y-6">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeItem.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="space-y-6 text-left"
-              >
-                {/* Clear, refined category badge */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold uppercase tracking-wider text-[#F3C3CF]">
-                  <span>{activeItem.tag}</span>
-                </div>
-
-                {/* Bold high-contrast headline */}
-                <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-[1.18] tracking-tight">
-                  {activeItem.headline}
-                </h3>
-
-                {/* Clear, legible editorial paragraph */}
-                <p className="text-base sm:text-lg text-[#EEEBDA]/85 leading-relaxed font-normal max-w-xl">
-                  {activeItem.desc}
-                </p>
-
-                {/* Minimalist CTA cluster (NO lines, luxury cream capsule) */}
-                <div className="pt-3 flex flex-col sm:flex-row sm:items-center gap-4">
-                  <button
-                    type="button"
-                    onClick={handleBook}
-                    className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-[#EEEBDA] hover:bg-white text-[#141937] text-xs font-extrabold uppercase tracking-[0.16em] transition-all hover:scale-105 cursor-pointer rolex-sheen shadow-xl"
-                  >
-                    <span>ОТРИМАТИ СТРАТЕГІЮ</span>
-                    <ArrowUpRight className="w-4 h-4" />
-                  </button>
-
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#EEEBDA]/50">
-                    США • ЄВРОПА • УКРАЇНА
-                  </span>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-        </div>
-
       </div>
-    </section>
+    </Section>
   )
 }

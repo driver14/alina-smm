@@ -1,34 +1,27 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { useReducedMotion } from 'framer-motion'
 import { Pause, Play } from 'lucide-react'
 import { triggerHaptic } from '../../utils/haptics'
 import { Reveal, Lines } from './ui/Reveal'
+import { useReducedMotionPref } from './ui/motion'
+import { photo, type PhotoName } from './ui/media'
 
 interface BdbHeroProps {
   onOpenBooking: () => void
 }
 
-const HERO_PHOTOS = [
-  { src: '/photos/alina-flowers.jpg', alt: 'Аліна Волошина з букетом квітів' },
-  { src: '/photos/alina-editorial.jpg', alt: 'Аліна Волошина — редакційний портрет' },
-  { src: '/photos/alina-barcelona.jpg', alt: 'Аліна Волошина в Барселоні' },
-  { src: '/photos/alina-work-process.jpg', alt: 'Аліна Волошина за роботою над стратегією' },
+const HERO_PHOTOS: { name: PhotoName; alt: string }[] = [
+  { name: 'sea', alt: 'Аліна Волошина на балконі з видом на море' },
+  { name: 'white-dress', alt: 'Аліна Волошина в білій сукні' },
+  { name: 'flowers', alt: 'Аліна Волошина з букетом квітів' },
+  { name: 'editorial', alt: 'Аліна Волошина — редакційний портрет' },
+  { name: 'suit', alt: 'Аліна Волошина в чорному костюмі' },
 ]
 
 const FACTS = ['3 ринки: США • Європа • Україна', '3+ роки в SMM', '1 власна команда', 'ROMI до 10.2x']
 
-const MARQUEE_ITEMS = [
-  'SMM-стратегія',
-  'Таргетована реклама',
-  'Маркетингова система',
-  'Власна команда спеціалістів',
-  'Довгострокове партнерство',
-  'Результат замість припущень',
-]
-
 export const BdbHero: React.FC<BdbHeroProps> = ({ onOpenBooking }) => {
   const reelRef = useRef<HTMLElement>(null)
-  const prefersReducedMotion = useReducedMotion()
+  const prefersReducedMotion = useReducedMotionPref()
   const [userPaused, setUserPaused] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const [inView, setInView] = useState(true)
@@ -111,17 +104,16 @@ export const BdbHero: React.FC<BdbHeroProps> = ({ onOpenBooking }) => {
           className="relative m-0 lg:col-span-3 h-[72svh] min-h-[420px] lg:h-auto lg:min-h-0 overflow-hidden bg-ink"
         >
           <div className="reel-track absolute inset-x-0 top-0 flex flex-col" data-running={isRunning ? 'true' : 'false'}>
-            {displayPhotos.map((photo, i) => (
+            {displayPhotos.map((p, i) => (
               <div
                 key={i}
                 aria-hidden={i >= HERO_PHOTOS.length ? true : undefined}
                 className="relative w-full aspect-[4/5] shrink-0 overflow-hidden"
               >
                 <img
-                  src={photo.src}
-                  alt={i >= HERO_PHOTOS.length ? '' : photo.alt}
-                  width={800}
-                  height={1000}
+                  {...photo(p.name)}
+                  sizes="(min-width: 1024px) 25vw, 100vw"
+                  alt={i >= HERO_PHOTOS.length ? '' : p.alt}
                   decoding="async"
                   fetchPriority={i === 0 ? 'high' : undefined}
                   loading={i < 2 ? 'eager' : 'lazy'}
@@ -149,27 +141,13 @@ export const BdbHero: React.FC<BdbHeroProps> = ({ onOpenBooking }) => {
         </figure>
       </div>
 
-      {/* Facts strip + marquee */}
+      {/* Facts strip */}
       <div className="border-t border-ink/20">
         <ul className="wrap grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-2 py-4 t-ui">
           {FACTS.map((f) => (
             <li key={f}>{f}</li>
           ))}
         </ul>
-        <div className="border-t border-ink/20 overflow-hidden py-3 bg-ink text-pink" aria-hidden="true">
-          <div className="marquee">
-            {[0, 1].map((dup) => (
-              <div key={dup} className="flex shrink-0">
-                {MARQUEE_ITEMS.map((item) => (
-                  <span key={item} className="font-display font-extrabold uppercase text-[22px] leading-none px-6 whitespace-nowrap">
-                    {item}
-                    <span className="t-mix font-normal pl-12">/</span>
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   )

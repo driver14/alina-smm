@@ -37,16 +37,3 @@ export const Section: React.FC<SectionProps> = ({ id, theme, labelledBy, classNa
     {children}
   </section>
 )
-
-/** Small section index label, e.g. "02 — Досвід". Quiet, UI-sized. */
-export const Kicker: React.FC<{ index?: string; children: React.ReactNode; className?: string }> = ({
-  index,
-  children,
-  className = '',
-}) => (
-  <p className={`t-ui flex items-center gap-3 opacity-70 ${className}`}>
-    {index && <span>{index}</span>}
-    {index && <span aria-hidden="true" className="inline-block w-6 h-px bg-current" />}
-    <span>{children}</span>
-  </p>
-)

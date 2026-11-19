@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { triggerHaptic } from '../../utils/haptics'
 import { Reveal, Lines } from './ui/Reveal'
+import { ScrollZoom } from './ui/depth'
+import { photo } from './ui/media'
+import { setMotionReduced, useReducedMotionPref } from './ui/motion'
 
 interface BdbFooterProps {
   onOpenBooking: (service?: string, note?: string) => void
@@ -39,6 +42,7 @@ function formatKyivTime(): string {
 
 export const BdbFooter: React.FC<BdbFooterProps> = ({ onOpenBooking }) => {
   const [kyivTime, setKyivTime] = useState<string>('')
+  const reducedMotion = useReducedMotionPref()
 
   useEffect(() => {
     const update = () => setKyivTime(formatKyivTime())
@@ -56,21 +60,21 @@ export const BdbFooter: React.FC<BdbFooterProps> = ({ onOpenBooking }) => {
     <>
       {/* Closing call to action */}
       <section id="contact" data-theme="accent" aria-labelledby="cta-title" className="surface-pink">
-        <div className="grid grid-cols-1 lg:grid-cols-12">
-          <figure className="m-0 lg:col-span-5 relative h-[60svh] lg:h-auto min-h-[380px] overflow-hidden bg-ink">
-            <img
-              src="/photos/alina-cafe.jpg"
-              alt="Аліна Волошина в кав’ярні"
-              width={682}
-              height={1024}
-              loading="lazy"
-              decoding="async"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+        <div className="split-grid">
+          <figure className="m-0 lg:-ml-(--gutter) lg:col-span-4 relative h-[60svh] lg:h-auto min-h-[380px] overflow-hidden bg-ink">
+            <ScrollZoom className="absolute inset-0" dim={false}>
+              <img
+                {...photo('cafe-smile')}
+                sizes="(min-width: 1024px) 34vw, 100vw"
+                alt="Аліна Волошина в кав’ярні"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover object-[center_40%]"
+              />
+            </ScrollZoom>
           </figure>
 
-          <Reveal className="lg:col-span-7 wrap section-y flex flex-col justify-between gap-14">
-            <p className="t-ui opacity-70">Фінальний крок до системи</p>
+          <Reveal className="on-grid lg:col-span-7 lg:col-start-6 wrap section-y flex flex-col justify-between gap-14">
 
             <div className="space-y-8">
               <h2 id="cta-title" className="t-display">
@@ -177,11 +181,32 @@ export const BdbFooter: React.FC<BdbFooterProps> = ({ onOpenBooking }) => {
             </div>
           </div>
 
-          <div className="mt-20 pt-6 border-t border-paper/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 t-ui opacity-70">
-            <p>© 2026 Аліна Волошина | SMM & Marketing. Всі права захищені.</p>
-            <a href="#hero" onClick={() => triggerHaptic('light')} className="link-u">
-              Вгору ↑
-            </a>
+          <div className="mt-20 pt-6 border-t border-paper/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 t-ui">
+            <p className="opacity-70">© 2026 Аліна Волошина | SMM & Marketing. Всі права захищені.</p>
+            <div className="flex items-center gap-8">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={reducedMotion}
+                onClick={() => setMotionReduced(!reducedMotion)}
+                className="group inline-flex items-center gap-3 cursor-pointer opacity-80 hover:opacity-100"
+              >
+                <span
+                  aria-hidden="true"
+                  className={`relative w-9 h-5 border border-paper/60 transition-colors ${reducedMotion ? 'bg-pink border-pink' : ''}`}
+                >
+                  <span
+                    className={`absolute top-[3px] left-[3px] w-3 h-3 transition-transform duration-300 ${
+                      reducedMotion ? 'translate-x-4 bg-ink' : 'bg-paper'
+                    }`}
+                  />
+                </span>
+                Зменшити рух
+              </button>
+              <a href="#hero" onClick={() => triggerHaptic('light')} className="link-u opacity-70 hover:opacity-100">
+                Вгору ↑
+              </a>
+            </div>
           </div>
         </div>
       </footer>

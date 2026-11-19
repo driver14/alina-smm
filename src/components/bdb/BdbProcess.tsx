@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Reveal, Lines } from './ui/Reveal'
-import { Section, Kicker } from './ui/Section'
+import { Section } from './ui/Section'
 
 const STEPS = [
   {
@@ -76,14 +76,11 @@ export const BdbProcess: React.FC = () => {
       <div className="wrap grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-16">
         <Reveal className="lg:col-span-5">
           <div className="lg:sticky" style={{ top: 'calc(var(--header-h) + 40px)' }}>
-            <Kicker index="09" className="mb-8">
-              Як відбувається співпраця
-            </Kicker>
             <h2 id="process-title">
-              <span className="t-display block">
+              <span className="t-display-m block">
                 <Lines lines={['Зрозумілий', 'процес']} />
               </span>
-              <span className="t-serif-xl block mt-2">
+              <span className="t-serif-l block mt-2">
                 <Lines start={2} lines={['від знайомства', 'до результату.']} />
               </span>
             </h2>

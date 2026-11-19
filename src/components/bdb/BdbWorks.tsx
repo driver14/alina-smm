@@ -3,10 +3,40 @@ import { ArrowLeft, ArrowRight, X } from 'lucide-react'
 import { triggerHaptic } from '../../utils/haptics'
 import { CASES_DATA, type CaseStudy } from '../../data/content'
 import { Reveal, Lines } from './ui/Reveal'
-import { Section, Kicker } from './ui/Section'
+import { Section } from './ui/Section'
+import { useTilt } from './ui/useTilt'
+import { useReducedMotionPref } from './ui/motion'
 
 interface BdbWorksProps {
   onOpenBooking: (service?: string, note?: string) => void
+}
+
+/** Cover image that tilts in 3D inside its frame, following a fine pointer. */
+const CaseCover: React.FC<{ cover?: string; metric: string }> = ({ cover, metric }) => {
+  const { ref: tiltRef, onPointerMove, onPointerLeave } = useTilt<HTMLDivElement>(6)
+  return (
+    <div
+      className="relative flex-1 aspect-[4/5] overflow-hidden bg-navy"
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+    >
+      {cover && (
+        <div ref={tiltRef} className="absolute -inset-[5%] will-change-transform">
+          <img
+            src={cover}
+            alt=""
+            width={1080}
+            height={1350}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.05]"
+            style={{ transitionTimingFunction: 'var(--ease-out-expo)' }}
+          />
+        </div>
+      )}
+      <span className="absolute top-4 right-4 btn-tag btn-tag--light pointer-events-none">{metric}</span>
+    </div>
+  )
 }
 
 /** Short niche word for the rotated strip, e.g. "Beauty & Сфера послуг" → "BEAUTY". */
@@ -26,6 +56,7 @@ const CaseViewer: React.FC<ViewerProps> = ({ caseIdx, onClose, onCaseChange, onB
   const [slide, setSlide] = useState(0)
   const [mode, setMode] = useState<'before' | 'after'>('after')
   const dialogRef = useRef<HTMLDivElement>(null)
+  const reduced = useReducedMotionPref()
   const total = c.slides.length
   const current = c.slides[slide]
 
@@ -115,7 +146,22 @@ const CaseViewer: React.FC<ViewerProps> = ({ caseIdx, onClose, onCaseChange, onB
           </div>
 
           <figure className="m-0 flex-1 flex items-center justify-center px-4 sm:px-10 pb-4">
-            {current.imageUrl ? (
+            {current.videoUrl ? (
+              <video
+                key={current.videoUrl}
+                src={current.videoUrl}
+                poster={current.imageUrl}
+                muted
+                loop
+                playsInline
+                autoPlay={!reduced}
+                controls={reduced}
+                aria-label={`${current.title}. ${current.subtitle}`}
+                width={1080}
+                height={1350}
+                className="swap-in-img max-h-[min(78svh,900px)] w-auto max-w-full object-contain"
+              />
+            ) : current.imageUrl ? (
               <img
                 key={current.imageUrl}
                 src={current.imageUrl}
@@ -272,9 +318,6 @@ export const BdbWorks: React.FC<BdbWorksProps> = ({ onOpenBooking }) => {
     <Section id="cases" theme="ink" labelledBy="cases-title" className="pt-[var(--section-y)]">
       <Reveal className="wrap grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-6 items-end">
         <div className="lg:col-span-9">
-          <Kicker index="06" className="mb-8">
-            Кейси та результати
-          </Kicker>
           <h2 id="cases-title">
             <span className="t-display block">
               <Lines lines={['Не обіцянки,']} />
@@ -306,7 +349,6 @@ export const BdbWorks: React.FC<BdbWorksProps> = ({ onOpenBooking }) => {
                 }}
                 type="button"
                 onClick={() => open(i)}
-                data-cursor="explore"
                 aria-label={`Відкрити кейс: ${c.title}`}
                 className="group block w-full text-left cursor-pointer"
               >
@@ -320,21 +362,7 @@ export const BdbWorks: React.FC<BdbWorksProps> = ({ onOpenBooking }) => {
                       {word} {word} {word} {word}
                     </span>
                   </div>
-                  <div className="relative flex-1 aspect-[4/5] overflow-hidden bg-navy">
-                    {cover && (
-                      <img
-                        src={cover}
-                        alt=""
-                        width={819}
-                        height={1024}
-                        loading="lazy"
-                        decoding="async"
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.04]"
-                        style={{ transitionTimingFunction: 'var(--ease-out-expo)' }}
-                      />
-                    )}
-                    <span className="absolute top-4 right-4 btn-tag btn-tag--light pointer-events-none">{c.highlightMetric}</span>
-                  </div>
+                  <CaseCover cover={cover} metric={c.highlightMetric} />
                 </div>
                 <div className="bg-paper text-ink px-4 sm:px-5 py-4 flex items-baseline justify-between gap-4 min-h-[88px]">
                   <span className="t-serif text-[24px] leading-[1.1]">{c.title}</span>

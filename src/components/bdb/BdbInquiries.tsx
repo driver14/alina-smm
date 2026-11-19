@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { triggerHaptic } from '../../utils/haptics'
 import { Reveal, Lines } from './ui/Reveal'
-import { Section, Kicker } from './ui/Section'
+import { Section } from './ui/Section'
 
 interface BdbInquiriesProps {
   onOpenBooking: (service?: string, note?: string) => void
@@ -111,9 +111,6 @@ export const BdbInquiries: React.FC<BdbInquiriesProps> = ({ onOpenBooking }) => 
   return (
     <Section id="inquiries" theme="ink" labelledBy="inquiries-title" className="section-y">
       <Reveal className="wrap">
-        <Kicker index="04" className="mb-8">
-          З якими запитами я працюю
-        </Kicker>
         <h2 id="inquiries-title" className="max-w-[1150px]">
           <span className="t-display block">
             <Lines lines={['Допомагаю перетворити', 'хаотичний SMM']} />
@@ -139,15 +136,14 @@ export const BdbInquiries: React.FC<BdbInquiriesProps> = ({ onOpenBooking }) => 
                       triggerHaptic('light')
                       setActiveIdx(idx)
                     }}
-                    className={`group w-full grid grid-cols-[48px_1fr] sm:grid-cols-[72px_1fr] items-baseline gap-x-4 py-6 text-left cursor-pointer transition-opacity ${
+                    className={`group w-full block py-6 text-left cursor-pointer transition-opacity ${
                       isActive ? 'opacity-100' : 'opacity-45 hover:opacity-90'
                     }`}
                   >
-                    <span className={`t-ui ${isActive ? 'text-pink' : ''}`}>{item.number}</span>
                     <span className="t-h3 leading-[1.05]">{item.problem}</span>
                   </button>
                   {isActive && (
-                    <div className="lg:hidden pb-10 pl-[64px] sm:pl-[88px]">
+                    <div className="lg:hidden pb-10">
                       <Detail item={item} onBook={handleBook} />
                     </div>
                   )}

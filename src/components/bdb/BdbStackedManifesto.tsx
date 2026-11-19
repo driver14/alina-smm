@@ -1,7 +1,7 @@
 import React from 'react'
 import { triggerHaptic } from '../../utils/haptics'
 import { Reveal, Lines } from './ui/Reveal'
-import { Section, Kicker } from './ui/Section'
+import { Section } from './ui/Section'
 
 interface BdbStackedManifestoProps {
   onOpenBooking?: () => void
@@ -17,7 +17,6 @@ export const BdbStackedManifesto: React.FC<BdbStackedManifestoProps> = ({ onOpen
   return (
     <Section id="philosophy" theme="paper" labelledBy="philosophy-title" className="section-y">
       <Reveal className="wrap">
-        <Kicker className="justify-center mb-12">Системна архітектура маркетингу</Kicker>
 
         <h2 id="philosophy-title" className="text-center mx-auto max-w-[1200px]">
           <span className="t-display block">
@@ -54,7 +53,6 @@ export const BdbStackedManifesto: React.FC<BdbStackedManifestoProps> = ({ onOpen
               <button type="button" onClick={handleCta} className="btn-tag">
                 Почати співпрацю
               </button>
-              <span className="t-ui opacity-60">США • Європа • Україна</span>
             </div>
           </div>
         </div>

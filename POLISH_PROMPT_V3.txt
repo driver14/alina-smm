@@ -1,0 +1,169 @@
+================================================================================
+ ALINA VOLOSHYNA — SMM & MARKETING
+ MASTER PROMPT v3: "POLISH, DEPTH, MEDIA"
+ Scope: the BDB edition (src/components/bdb/**, src/index.css, public/media/**)
+ References: billiondollarboy.com (editorial structure, type, colour fields)
+             rolex.com (cinematic media, calm motion, restraint, precision)
+================================================================================
+
+You are a senior creative developer + art director. The site has already been
+rebuilt in the BDB editorial language (solid colour fields, condensed display
+type, serif counter-voice, tag buttons). Version 3 is NOT a new concept. It is
+the polish pass that makes the existing system feel expensive: real depth,
+better media, calmer and more precise motion, zero rough edges.
+
+Read this whole file before touching code. Work section by section, verify each
+in a real browser at 1440 and 390 wide, then move on.
+
+--------------------------------------------------------------------------------
+0. NON-NEGOTIABLES
+--------------------------------------------------------------------------------
+- Keep every word of existing copy, every metric, price, case and contact.
+  Never invent numbers, clients, reviews or logos.
+- Never copy code, copy, logos, photos or video from the references. Borrow
+  principles only (proportion, rhythm, restraint, motion feel).
+- No fake loaders, no scroll-jacking (native scroll always works; sticky +
+  scroll-linked progress is fine, hijacking wheel events is not).
+- Accessibility: semantic landmarks, one h1, logical headings, visible focus,
+  keyboard for everything, dialogs trap and restore focus, Esc closes,
+  prefers-reduced-motion respected AND a manual "Reduce motion" switch.
+- Performance: LCP image eager + fetchpriority=high, everything else lazy;
+  every raster served as WebP with srcset; videos muted/inline/looped, only
+  play while visible, poster frames, never autoplay with sound.
+- No console errors. Typecheck, lint, build clean.
+
+--------------------------------------------------------------------------------
+1. WHAT "PREMIUM" MEANS HERE (distilled from the references)
+--------------------------------------------------------------------------------
+BDB:
+- Each section owns ONE solid field (ink / paper / pink). No gradients, no glass.
+- Huge condensed uppercase display + quiet serif counter-line underneath.
+- Tag buttons: rectangular, tight padding, text sits on a solid chip.
+- Edge-to-edge media columns; text never floats on busy photos.
+Rolex:
+- Media is cinematic: full-bleed, generous crop, slow scale (1.08 -> 1.0)
+  while entering, dims slightly while leaving.
+- Tiny uppercase kicker above a big calm headline, lots of air.
+- Motion is slow and exact: 700–1200ms, expo/quart easing, never bouncy.
+- A visible "Reduce motion" switch in the footer.
+Combined rule: loud typography, quiet motion, rich media, strict grid.
+
+--------------------------------------------------------------------------------
+2. DESIGN TOKENS (keep, refine only)
+--------------------------------------------------------------------------------
+Colours: ink #0F1230, paper #F7F4EC, pink #F3C3CF, pink-deep #E9A3B5,
+         navy #141937, cream #EEEBDA. Text on ink = paper; on pink = ink.
+Type:    Display = Roboto Condensed 900 uppercase, tracking -0.03em, lh .86–.9
+         Editorial = Cormorant Garamond 300 (upright; italic only for 1–2 words)
+         UI/body = Inter 400/500/600. t-ui = 12–13px uppercase +0.04em.
+Radii:   0 everywhere. Hairlines 1px at 15–20% opacity.
+Easing:  --ease-out-expo cubic-bezier(.16,1,.3,1); --ease-in-out-quart.
+Depth:   perspective 1200–1600px; never more than 18deg of tilt; no drop
+         shadows on text; media may cast one soft shadow on paper only.
+
+--------------------------------------------------------------------------------
+3. MEDIA PIPELINE (fix all pictures, add the new ones)
+--------------------------------------------------------------------------------
+Sources: the existing public/photos/*.jpg (682–819px, too soft for retina) and
+the new originals the owner supplied (1080–6048px JPG/HEIC, iPhone MOV).
+Rules:
+- Convert everything to WebP, EXIF-rotated, sRGB, stripped metadata.
+  Widths: 800 and 1600 (never upscale past the source). Quality 80.
+- Output to public/media/photos/<name>-<w>.webp; reference through one helper
+  (src/components/bdb/ui/media.ts) that builds src + srcSet + sizes.
+- Case slides: convert every PNG/JPG to WebP 1080w q82 (cuts ~14MB to ~2MB).
+- Videos: re-encode to H.264 MP4 (fallback WebM) at 720w for ambient clips and
+  1080w for case slides; 2–3 Mbps; no audio track; plus a JPG/WebP poster.
+- Replace soft images with sharper originals where the same shot exists
+  (Barcelona, work-process/matcha). Add new shots: café portraits, sea balcony,
+  workspace series (Notion matrix, roses, Bridgerton desk, Starbucks, terrazzo,
+  candles), night-work videos, animated case slides.
+- Every <img>: width/height set, alt in Ukrainian describing the scene,
+  decorative duplicates alt="" + aria-hidden.
+
+--------------------------------------------------------------------------------
+4. THE CENTREPIECE: "КЛЮЧОВІ ВЕКТОРИ СИСТЕМИ" (#wheel) — FULL REBUILD
+--------------------------------------------------------------------------------
+Problem now: flat list of words with opacity steps, discrete jumps, empty right
+half, no media, animation feels cheap.
+Target: a real 3D word cylinder + cinematic media stage, scroll-linked and
+butter-smooth.
+
+Desktop (>=1024px, motion allowed):
+- Section height = 100svh + 6 x 60svh. Inner stage is sticky, 100svh.
+- Header row: kicker "Архітектура маркетингу" (pink) + h2 "Ключові вектори
+  системи" left; big tabular counter "01 / 06" right.
+- LEFT (7 cols): a CSS 3D cylinder. Container perspective 1400px. A
+  preserve-3d <ul>; item i is placed with rotateX(-i*θ) translateZ(R) where
+  θ = 22deg and R = row / (2*tan(θ/2)). The cylinder rotates rotateX(p*θ)
+  where p is CONTINUOUS scroll progress (0..5), lerped in rAF (factor ~0.12)
+  and written straight to the DOM through refs (no React re-render per frame).
+  Per-item opacity = clamp(cos(delta*θ)^3), backface hidden; the front word is
+  paper, the others paper at falling opacity — depth does the work, no
+  outline text, no scaleY hacks.
+  A thin pink "selection window" (two 1px rules + index) frames the front row.
+- RIGHT (5 cols): a media stage (aspect 4/5) with one layer per vector
+  (photo or muted looping video). The active layer reveals with clip-path
+  inset(100% 0 0 0) -> inset(0) over 900ms expo while scaling 1.08 -> 1.0;
+  only the active video plays. Under it: tag (pink t-ui), serif headline,
+  description, CTA "Отримати стратегію" + "США • Європа • Україна".
+- Progress rail: six clickable ticks; clicking scrolls smoothly to that
+  vector's position (keyboard accessible, aria-current on the active one).
+Mobile / reduced motion:
+- No pin, no 3D. Horizontal scroll-snap rail of 6 cards (82vw): media 4/5,
+  big display word, tag, headline, description, CTA. Counter shows position.
+Accessibility: words are buttons (aria-pressed), the detail is a polite live
+region, all media is decorative except where it carries meaning.
+
+--------------------------------------------------------------------------------
+5. SITE-WIDE POLISH CHECKLIST (section by section)
+--------------------------------------------------------------------------------
+Navbar   — theme follows section; 1px bottom rule only when scrolled; menu
+           focus trap; CTA never wraps; wordmark aligned to grid.
+Hero     — reel uses sharp WebP; add the new portraits; first image eager;
+           subtle 3D: reel column tilts max 6deg with pointer (fine pointers
+           only, motion allowed); Stop/Play stays.
+Expertise— numbers count up once on reveal (tabular-nums), no layout shift.
+Manifesto— line reveals; quiet.
+Vectors  — section 4.
+Approach — accordion photos from the new workspace series; open row image
+           scales 1.06 -> 1.
+Inquiries— sticky detail; niche list hover underline.
+Method   — columns; numbers ink in on reveal.
+Cases    — cards get a 3D pointer tilt (max 8deg, perspective 1200, glare-free)
+           and the cover scales on hover; viewer supports video slides
+           (muted, loop, plays only while current); WebP slides.
+Services — price list; tag button per row; no orphaned words.
+About    — Rolex-style: photo scales 1.1 -> 1 and slightly dims as the
+           section scrolls past; caption chip.
+Process  — rail scale; numbers ink in.
+FAQ      — divider accordion.
+Contact  — new sharp café photo; headline line reveal.
+Footer   — Kyiv time; "Reduce motion" switch (persists in localStorage,
+           sets <html data-motion="reduce">, honoured by CSS and by every
+           JS-driven animation hook).
+
+--------------------------------------------------------------------------------
+6. MOTION SPEC
+--------------------------------------------------------------------------------
+- Reveal: line-mask translateY(105%) -> 0, 900ms expo, 70ms stagger.
+- Media enter: clip-path + scale 1.08 -> 1, 1000ms expo.
+- Scroll-linked: only transform/opacity, rAF + lerp, passive listeners,
+  IntersectionObserver to start/stop work off-screen.
+- Hover: 300–500ms; tilt follows pointer with lerp, resets on leave.
+- Reduced motion (OS or manual switch): no pin, no tilt, no reel drift,
+  no autoplay video (poster only), reveals are instant.
+
+--------------------------------------------------------------------------------
+7. QA & ACCEPTANCE
+--------------------------------------------------------------------------------
+- Screens at 1440x900 and 390x844, full page; no horizontal overflow.
+- Vectors: scroll through slowly; cylinder rotates continuously, words never
+  overlap the header, media swaps in sync, counter correct, click ticks work.
+- Keyboard: Tab through the page; Enter/Space operate every control; Esc
+  closes dialogs; focus returns to the trigger.
+- Reduce-motion switch toggles everything listed above live.
+- Network: total image weight on first view < 1.5MB; no PNG case slides left.
+- bun run build, bun run lint (no new warnings in touched files), tsc -b.
+- Final report: what changed, evidence, limitations, next steps.
+================================================================================

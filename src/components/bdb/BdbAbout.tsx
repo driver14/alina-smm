@@ -1,7 +1,9 @@
 import React from 'react'
 import { triggerHaptic } from '../../utils/haptics'
 import { Reveal, Lines } from './ui/Reveal'
-import { Section, Kicker } from './ui/Section'
+import { Section } from './ui/Section'
+import { ScrollZoom } from './ui/depth'
+import { photo } from './ui/media'
 
 interface BdbAboutProps {
   onOpenBooking: (service?: string, note?: string) => void
@@ -55,27 +57,25 @@ export const BdbAbout: React.FC<BdbAboutProps> = ({ onOpenBooking }) => {
 
   return (
     <Section id="about" theme="pink" labelledBy="about-title">
-      <div className="grid grid-cols-1 lg:grid-cols-12">
-        <Reveal as="figure" className="m-0 lg:col-span-6 relative min-h-[70svh] lg:min-h-[100svh] overflow-hidden bg-ink">
-          <img
-            src="/photos/alina-barcelona.jpg"
-            alt="Аліна Волошина — SMM-стратегиня, Барселона"
-            width={682}
-            height={1024}
-            loading="lazy"
-            decoding="async"
-            className="clip-up absolute inset-0 w-full h-full object-cover"
-          />
+      <div className="split-grid">
+        <Reveal as="figure" className="m-0 lg:-ml-(--gutter) lg:col-span-6 relative min-h-[70svh] lg:min-h-[100svh] overflow-hidden bg-ink">
+          <ScrollZoom className="clip-up absolute inset-0">
+            <img
+              {...photo('barcelona')}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              alt="Аліна Волошина — SMM-стратегиня, Барселона"
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover object-[center_35%]"
+            />
+          </ScrollZoom>
           <figcaption className="absolute left-0 bottom-0 btn-tag !text-[14px] pointer-events-none">
             3+ роки в SMM & маркетингу
           </figcaption>
         </Reveal>
 
-        <Reveal className="lg:col-span-6 wrap section-y flex flex-col justify-between gap-14">
+        <Reveal className="on-grid lg:col-span-6 lg:col-start-7 wrap section-y flex flex-col justify-between gap-14">
           <div>
-            <Kicker index="08" className="mb-8">
-              Про мене та команду
-            </Kicker>
             <h2 id="about-title">
               <span className="t-display block">
                 <Lines lines={['Особиста', 'стратегія.']} />
@@ -87,7 +87,6 @@ export const BdbAbout: React.FC<BdbAboutProps> = ({ onOpenBooking }) => {
           </div>
 
           <div className="fade-up space-y-6 max-w-[560px]" style={{ ['--i' as string]: 3 } as React.CSSProperties}>
-            <p className="t-ui opacity-70">Філософія керування маркетингом</p>
             <p className="t-h3">
               Мене звати Аліна Волошина. Я будую системний маркетинг, який приносить реальний дохід.
             </p>
@@ -125,10 +124,9 @@ export const BdbAbout: React.FC<BdbAboutProps> = ({ onOpenBooking }) => {
             <p className="t-ui opacity-60">США • Європа • Україна · 100+ успішних кампаній</p>
           </div>
           <ol className="border-t border-paper/15">
-            {COMPETENCIES.map((c, i) => (
+            {COMPETENCIES.map((c) => (
               <li key={c.id} className="grid grid-cols-12 gap-x-6 gap-y-2 py-7 border-b border-paper/15">
-                <span className="col-span-2 sm:col-span-1 t-ui opacity-60 pt-1.5">{String(i + 1).padStart(2, '0')}</span>
-                <div className="col-span-10 sm:col-span-5">
+                <div className="col-span-12 sm:col-span-6">
                   <p className="t-h3">{c.role}</p>
                   <p className="t-serif text-pink mt-1">{c.lead}</p>
                 </div>

@@ -5,6 +5,8 @@ export interface CaseSlide {
   category: 'screenshot' | 'creative' | 'analytics' | 'review' | 'result'
   placeholderText: string
   imageUrl?: string
+  /** Optional muted looping clip; imageUrl is its poster. */
+  videoUrl?: string
 }
 
 export interface CaseStudy {
@@ -42,7 +44,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Кейс таргетованої реклами майстра перманентного макіяжу (Naples, FL)',
         category: 'creative',
         placeholderText: 'Обкладинка кейсу: окупність реклами в 10Х',
-        imageUrl: '/cases/case1/slide-1.png'
+        imageUrl: '/cases/case1/slide-1.webp'
       },
       {
         id: 2,
@@ -50,7 +52,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Локальна аудиторія в Naples, Florida (~20 тис. жителів)',
         category: 'screenshot',
         placeholderText: 'Початковий стан профілю: 0 підписників, вузький ринок',
-        imageUrl: '/cases/case1/slide-2.png'
+        imageUrl: '/cases/case1/slide-2.webp'
       },
       {
         id: 3,
@@ -58,7 +60,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Не гналися за швидким результатом, а шукали робочі зв’язки',
         category: 'analytics',
         placeholderText: 'Тестування аудиторій, креативів та налаштувань',
-        imageUrl: '/cases/case1/slide-3.png'
+        imageUrl: '/cases/case1/slide-3.webp'
       },
       {
         id: 4,
@@ -66,7 +68,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: '23 діалоги за ціною $4.57 та доведення до реального запису',
         category: 'screenshot',
         placeholderText: 'Скриншот Direct та Meta Ads: якісні ліди, а не просто пусті кліки',
-        imageUrl: '/cases/case1/slide-4.png'
+        imageUrl: '/cases/case1/slide-4.webp'
       },
       {
         id: 5,
@@ -74,7 +76,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Щоденний контроль бюджету, відключення неефективного',
         category: 'creative',
         placeholderText: 'Тестування нових форматів відеореклами та аудиторій',
-        imageUrl: '/cases/case1/slide-5.jpg'
+        imageUrl: '/cases/case1/slide-5.webp'
       },
       {
         id: 6,
@@ -82,7 +84,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: '33 звернення, 5 нових клієнтів (15.2%), середній чек $420',
         category: 'result',
         placeholderText: 'Офіційний звіт: $200 бюджет, 5 клієнтів, ROAS 10x',
-        imageUrl: '/cases/case1/slide-6.png'
+        imageUrl: '/cases/case1/slide-6.webp'
       },
       {
         id: 7,
@@ -90,7 +92,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Окупність 10Х: кожен $1 у рекламу приніс $10 чистої виручки',
         category: 'result',
         placeholderText: 'Підтвердження ROAS 10x за період 01.09 – 30.09',
-        imageUrl: '/cases/case1/slide-7.png'
+        imageUrl: '/cases/case1/slide-7.webp'
       },
       {
         id: 8,
@@ -98,7 +100,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Плавне зростання бюджету (+15-20%) та підготовка нових зв’язок',
         category: 'analytics',
         placeholderText: 'Стратегія довгострокового залучення клієнтів без вигорання',
-        imageUrl: '/cases/case1/slide-8.png'
+        imageUrl: '/cases/case1/slide-8.webp'
       },
       {
         id: 9,
@@ -106,7 +108,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Результат — це не випадковість, а точний розрахунок і контроль',
         category: 'review',
         placeholderText: 'Чому реклама стає керованим інструментом прибутку',
-        imageUrl: '/cases/case1/slide-9.png'
+        imageUrl: '/cases/case1/slide-9.webp'
       }
     ]
   },
@@ -129,7 +131,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Кейс майстра перманентного макіяжу з Naples, Florida',
         category: 'creative',
         placeholderText: 'Обкладинка кейсу PMU в слабкий сезон',
-        imageUrl: '/cases/case2/slide-1.jpg'
+        imageUrl: '/cases/case2/slide-1.webp'
       },
       {
         id: 2,
@@ -137,7 +139,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Публікації до/після та вільних віконець не давали записів',
         category: 'screenshot',
         placeholderText: 'Попередній досвід роботи з SMM без конверсій',
-        imageUrl: '/cases/case2/slide-2.jpg'
+        imageUrl: '/cases/case2/slide-2.webp'
       },
       {
         id: 3,
@@ -145,7 +147,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Поступово залишити другорядні послуги та масштабувати перманент',
         category: 'analytics',
         placeholderText: 'Формування позиціонування під моно-послугу',
-        imageUrl: '/cases/case2/slide-3.png'
+        imageUrl: '/cases/case2/slide-3.webp'
       },
       {
         id: 4,
@@ -153,7 +155,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Поєднання SMM + таргету в одну систему замість двох окремих процесів',
         category: 'creative',
         placeholderText: 'Хто наш клієнт і як довести його до запису',
-        imageUrl: '/cases/case2/slide-4.png'
+        imageUrl: '/cases/case2/slide-4.webp'
       },
       {
         id: 5,
@@ -161,7 +163,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Локальний пошук у Google як важливий канал для б’юті-послуг',
         category: 'screenshot',
         placeholderText: 'Пропрацювання відгуків та локального SEO в Naples',
-        imageUrl: '/cases/case2/slide-5.png'
+        imageUrl: '/cases/case2/slide-5.webp'
       },
       {
         id: 6,
@@ -169,7 +171,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Реагували на цифри в процесі, а не чекали саморозкрутки',
         category: 'analytics',
         placeholderText: 'Постійне тестування подач та контроль ціни ліда',
-        imageUrl: '/cases/case2/slide-6.png'
+        imageUrl: '/cases/case2/slide-6.webp'
       },
       {
         id: 7,
@@ -177,7 +179,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Замість сухого скидання прайсу — консультація та виявлення потреб',
         category: 'screenshot',
         placeholderText: 'Порівняння діалогів та конверсія в реальне бронювання',
-        imageUrl: '/cases/case2/slide-7.png'
+        imageUrl: '/cases/case2/slide-7.webp'
       },
       {
         id: 8,
@@ -185,7 +187,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: '+136 підписників з нуля у найслабший локальний сезон',
         category: 'result',
         placeholderText: 'Підсумкова статистика профілю та перші продажі',
-        imageUrl: '/cases/case2/slide-8.jpg'
+        imageUrl: '/cases/case2/slide-8.webp'
       },
       {
         id: 9,
@@ -193,7 +195,34 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Переведення PMU в основне джерело доходу майстра',
         category: 'review',
         placeholderText: 'План масштабування на наступний сезон',
-        imageUrl: '/cases/case2/slide-9.png'
+        imageUrl: '/cases/case2/slide-9.webp'
+      },
+      {
+        id: 10,
+        title: 'Показували не лише готові роботи',
+        subtitle: 'Майстриня, її підхід, процес, результати та реакції клієнток',
+        category: 'creative',
+        placeholderText: 'Як майстриня відрізнялася від схожих профілів на локальному ринку',
+        imageUrl: '/media/video/case2-market.webp',
+        videoUrl: '/media/video/case2-market.mp4'
+      },
+      {
+        id: 11,
+        title: 'Особливість ринку: сезонність Naples',
+        subtitle: 'Вузька аудиторія швидко робила рекламу дорожчою',
+        category: 'analytics',
+        placeholderText: 'Невелике місто з сильною сезонністю та малим притоком клієнтів',
+        imageUrl: '/media/video/case2-profiles.webp',
+        videoUrl: '/media/video/case2-profiles.mp4'
+      },
+      {
+        id: 12,
+        title: 'Результат не з’явився через один вдалий креатив',
+        subtitle: 'Тестували, дивилися на реальні цифри й відключали те, що не працює',
+        category: 'creative',
+        placeholderText: 'Постійне тестування креативів і контроль рекламних показників',
+        imageUrl: '/media/video/case2-creatives.webp',
+        videoUrl: '/media/video/case2-creatives.mp4'
       }
     ]
   },
@@ -216,7 +245,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Коли на перший погляд усе вже було добре',
         category: 'creative',
         placeholderText: 'Обкладинка кейсу мовної школи',
-        imageUrl: '/cases/case3/slide-1.png'
+        imageUrl: '/cases/case3/slide-1.webp'
       },
       {
         id: 2,
@@ -224,7 +253,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: '1,5k підписників, охоплення 138k та згадки блогерів без конверсії',
         category: 'analytics',
         placeholderText: 'Статистика акаунта на старті співпраці',
-        imageUrl: '/cases/case3/slide-2.png'
+        imageUrl: '/cases/case3/slide-2.webp'
       },
       {
         id: 3,
@@ -232,7 +261,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Новим підписникам було складно одразу зробити дорогий чек',
         category: 'screenshot',
         placeholderText: 'Виявлення бар’єрів до покупки в продуктовому аналізі',
-        imageUrl: '/cases/case3/slide-3.png'
+        imageUrl: '/cases/case3/slide-3.webp'
       },
       {
         id: 4,
@@ -240,7 +269,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Відповідь на запитання: «Чому мені варто заплатити $200+?»',
         category: 'creative',
         placeholderText: 'Схема розбору шляху клієнта та стратегії',
-        imageUrl: '/cases/case3/slide-4.png'
+        imageUrl: '/cases/case3/slide-4.webp'
       },
       {
         id: 5,
@@ -248,7 +277,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Замість загальних переваг — конкретні відповіді та методисти в кадрі',
         category: 'creative',
         placeholderText: 'Приклади нових Reels та розборів методики',
-        imageUrl: '/cases/case3/slide-5.jpg'
+        imageUrl: '/cases/case3/slide-5.webp'
       },
       {
         id: 6,
@@ -256,7 +285,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: '«Не просто сучасна методика, а як вона приведе учня до результату»',
         category: 'creative',
         placeholderText: 'Трансформація переваг у персональну цінність',
-        imageUrl: '/cases/case3/slide-6.png'
+        imageUrl: '/cases/case3/slide-6.webp'
       },
       {
         id: 7,
@@ -264,7 +293,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Що за продукт → Кому підходить → Яку проблему вирішує → Чому обрати його',
         category: 'creative',
         placeholderText: 'Схема щоденних змістовних Stories',
-        imageUrl: '/cases/case3/slide-7.png'
+        imageUrl: '/cases/case3/slide-7.webp'
       },
       {
         id: 8,
@@ -272,7 +301,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Увага → розуміння продукту → цінність → довіра → рішення про покупку',
         category: 'analytics',
         placeholderText: 'Схема шляху прийняття рішень клієнтом',
-        imageUrl: '/cases/case3/slide-8.png'
+        imageUrl: '/cases/case3/slide-8.webp'
       },
       {
         id: 9,
@@ -280,7 +309,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Охоплення 289,491, 3 880 підписників та кратне зростання продажів абонементів',
         category: 'result',
         placeholderText: 'Статистика акаунта з подвоєнням охоплень та виручки',
-        imageUrl: '/cases/case3/slide-9.png'
+        imageUrl: '/cases/case3/slide-9.webp'
       },
       {
         id: 10,
@@ -288,7 +317,7 @@ export const CASES_DATA: CaseStudy[] = [
         subtitle: 'Будувати комунікацію навколо того, що потрібно клієнту для рішення',
         category: 'review',
         placeholderText: 'Філософія стратегічного SMM у кейсі школи',
-        imageUrl: '/cases/case3/slide-10.png'
+        imageUrl: '/cases/case3/slide-10.webp'
       }
     ]
   }

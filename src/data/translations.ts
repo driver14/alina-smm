@@ -489,7 +489,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Кейс таргетованої реклами майстра перманентного макіяжу (Naples, FL)',
               category: 'creative',
               placeholderText: 'Обкладинка кейсу: окупність реклами в 10Х',
-              imageUrl: '/cases/case1/slide-1.png'
+              imageUrl: '/cases/case1/slide-1.webp'
             },
             {
               id: 2,
@@ -497,7 +497,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Локальна аудиторія в Naples, Florida (~20 тис. жителів)',
               category: 'screenshot',
               placeholderText: 'Початковий стан профілю: 0 підписників, вузький ринок',
-              imageUrl: '/cases/case1/slide-2.png'
+              imageUrl: '/cases/case1/slide-2.webp'
             },
             {
               id: 3,
@@ -505,7 +505,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Не гналися за швидким результатом, а шукали робочі зв’язки',
               category: 'analytics',
               placeholderText: 'Тестування аудиторій, креативів та налаштувань',
-              imageUrl: '/cases/case1/slide-3.png'
+              imageUrl: '/cases/case1/slide-3.webp'
             },
             {
               id: 4,
@@ -513,7 +513,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '23 діалоги за ціною $4.57 та доведення до реального запису',
               category: 'screenshot',
               placeholderText: 'Скриншот Direct та Meta Ads: якісні ліди, а не просто пусті кліки',
-              imageUrl: '/cases/case1/slide-4.png'
+              imageUrl: '/cases/case1/slide-4.webp'
             },
             {
               id: 5,
@@ -521,7 +521,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Щоденний контроль бюджету, відключення неефективного',
               category: 'creative',
               placeholderText: 'Тестування нових форматів відеореклами та аудиторій',
-              imageUrl: '/cases/case1/slide-5.jpg'
+              imageUrl: '/cases/case1/slide-5.webp'
             },
             {
               id: 6,
@@ -529,7 +529,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '33 звернення, 5 нових клієнтів (15.2%), середній чек $420',
               category: 'result',
               placeholderText: 'Офіційний звіт: $200 бюджет, 5 клієнтів, ROAS 10x',
-              imageUrl: '/cases/case1/slide-6.png'
+              imageUrl: '/cases/case1/slide-6.webp'
             },
             {
               id: 7,
@@ -537,7 +537,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Окупність 10Х: кожен $1 у рекламу приніс $10 чистої виручки',
               category: 'result',
               placeholderText: 'Підтвердження ROAS 10x за період 01.09 – 30.09',
-              imageUrl: '/cases/case1/slide-7.png'
+              imageUrl: '/cases/case1/slide-7.webp'
             },
             {
               id: 8,
@@ -545,7 +545,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Плавне зростання бюджету (+15-20%) та підготовка нових зв’язок',
               category: 'analytics',
               placeholderText: 'Стратегія довгострокового залучення клієнтів без вигорання',
-              imageUrl: '/cases/case1/slide-8.png'
+              imageUrl: '/cases/case1/slide-8.webp'
             },
             {
               id: 9,
@@ -553,7 +553,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Результат — це не випадковість, а точний розрахунок і контроль',
               category: 'review',
               placeholderText: 'Чому реклама стає керованим інструментом прибутку',
-              imageUrl: '/cases/case1/slide-9.png'
+              imageUrl: '/cases/case1/slide-9.webp'
             }
           ]
         },
@@ -576,7 +576,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Кейс майстра перманентного макіяжу з Naples, Florida',
               category: 'creative',
               placeholderText: 'Обкладинка кейсу PMU в слабкий сезон',
-              imageUrl: '/cases/case2/slide-1.jpg'
+              imageUrl: '/cases/case2/slide-1.webp'
             },
             {
               id: 2,
@@ -584,7 +584,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Публікації до/після та вільних віконець не давали записів',
               category: 'screenshot',
               placeholderText: 'Попередній досвід роботи з SMM без конверсій',
-              imageUrl: '/cases/case2/slide-2.jpg'
+              imageUrl: '/cases/case2/slide-2.webp'
             },
             {
               id: 3,
@@ -592,7 +592,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Поступово залишити другорядні послуги та масштабувати перманент',
               category: 'analytics',
               placeholderText: 'Формування позиціонування під моно-послугу',
-              imageUrl: '/cases/case2/slide-3.png'
+              imageUrl: '/cases/case2/slide-3.webp'
             },
             {
               id: 4,
@@ -600,7 +600,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Поєднання SMM + таргету в одну систему замість двох окремих процесів',
               category: 'creative',
               placeholderText: 'Хто наш клієнт і як довести його до запису',
-              imageUrl: '/cases/case2/slide-4.png'
+              imageUrl: '/cases/case2/slide-4.webp'
             },
             {
               id: 5,
@@ -608,7 +608,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Локальний пошук у Google як важливий канал для б’юті-послуг',
               category: 'screenshot',
               placeholderText: 'Пропрацювання відгуків та локального SEO в Naples',
-              imageUrl: '/cases/case2/slide-5.png'
+              imageUrl: '/cases/case2/slide-5.webp'
             },
             {
               id: 6,
@@ -616,7 +616,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Реагували на цифри в процесі, а не чекали саморозкрутки',
               category: 'analytics',
               placeholderText: 'Постійне тестування подач та контроль ціни ліда',
-              imageUrl: '/cases/case2/slide-6.png'
+              imageUrl: '/cases/case2/slide-6.webp'
             },
             {
               id: 7,
@@ -624,7 +624,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Замість сухого скидання прайсу — консультація та виявлення потреб',
               category: 'screenshot',
               placeholderText: 'Порівняння діалогів та конверсія в реальне бронювання',
-              imageUrl: '/cases/case2/slide-7.png'
+              imageUrl: '/cases/case2/slide-7.webp'
             },
             {
               id: 8,
@@ -632,7 +632,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '+136 підписників з нуля у найслабший локальний сезон',
               category: 'result',
               placeholderText: 'Підсумкова статистика профілю та перші продажі',
-              imageUrl: '/cases/case2/slide-8.jpg'
+              imageUrl: '/cases/case2/slide-8.webp'
             },
             {
               id: 9,
@@ -640,7 +640,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Переведення PMU в основне джерело доходу майстра',
               category: 'review',
               placeholderText: 'План масштабування на наступний сезон',
-              imageUrl: '/cases/case2/slide-9.png'
+              imageUrl: '/cases/case2/slide-9.webp'
             }
           ]
         },
@@ -663,7 +663,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Коли на перший погляд усе вже було добре',
               category: 'creative',
               placeholderText: 'Обкладинка кейсу мовної школи',
-              imageUrl: '/cases/case3/slide-1.png'
+              imageUrl: '/cases/case3/slide-1.webp'
             },
             {
               id: 2,
@@ -671,7 +671,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '1,5k підписників, охоплення 138k та згадки блогерів без конверсії',
               category: 'analytics',
               placeholderText: 'Статистика акаунта на старті співпраці',
-              imageUrl: '/cases/case3/slide-2.png'
+              imageUrl: '/cases/case3/slide-2.webp'
             },
             {
               id: 3,
@@ -679,7 +679,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Новим підписникам було складно одразу зробити дорогий чек',
               category: 'screenshot',
               placeholderText: 'Виявлення бар’єрів до покупки в продуктовому аналізі',
-              imageUrl: '/cases/case3/slide-3.png'
+              imageUrl: '/cases/case3/slide-3.webp'
             },
             {
               id: 4,
@@ -687,7 +687,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Відповідь на запитання: «Чому мені варто заплатити $200+?»',
               category: 'creative',
               placeholderText: 'Схема розбору шляху клієнта та стратегії',
-              imageUrl: '/cases/case3/slide-4.png'
+              imageUrl: '/cases/case3/slide-4.webp'
             },
             {
               id: 5,
@@ -695,7 +695,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Замість загальних переваг — конкретні відповіді та методисти в кадрі',
               category: 'creative',
               placeholderText: 'Приклади нових Reels та розборів методики',
-              imageUrl: '/cases/case3/slide-5.jpg'
+              imageUrl: '/cases/case3/slide-5.webp'
             },
             {
               id: 6,
@@ -703,7 +703,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '«Не просто сучасна методика, а як вона приведе учня до результату»',
               category: 'creative',
               placeholderText: 'Трансформація переваг у персональну цінність',
-              imageUrl: '/cases/case3/slide-6.png'
+              imageUrl: '/cases/case3/slide-6.webp'
             },
             {
               id: 7,
@@ -711,7 +711,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Що за продукт → Кому підходить → Яку проблему вирішує → Чому обрати його',
               category: 'creative',
               placeholderText: 'Схема щоденних змістовних Stories',
-              imageUrl: '/cases/case3/slide-7.png'
+              imageUrl: '/cases/case3/slide-7.webp'
             },
             {
               id: 8,
@@ -719,7 +719,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Увага → розуміння продукту → цінність → довіра → рішення про покупку',
               category: 'analytics',
               placeholderText: 'Схема шляху прийняття рішень клієнтом',
-              imageUrl: '/cases/case3/slide-8.png'
+              imageUrl: '/cases/case3/slide-8.webp'
             },
             {
               id: 9,
@@ -727,7 +727,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Охоплення 289,491, 3 880 підписників та кратне зростання продажів абонементів',
               category: 'result',
               placeholderText: 'Статистика акаунта з подвоєнням охоплень та виручки',
-              imageUrl: '/cases/case3/slide-9.png'
+              imageUrl: '/cases/case3/slide-9.webp'
             },
             {
               id: 10,
@@ -735,7 +735,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Будувати комунікацію навколо того, що потрібно клієнту для рішення',
               category: 'review',
               placeholderText: 'Філософія стратегічного SMM у кейсі школи',
-              imageUrl: '/cases/case3/slide-10.png'
+              imageUrl: '/cases/case3/slide-10.webp'
             }
           ]
         }
@@ -1195,7 +1195,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Paid advertising case study for a PMU artist in Naples, FL',
               category: 'creative',
               placeholderText: 'Case study cover: 10X return on ad spend',
-              imageUrl: '/cases/case1/slide-1.png'
+              imageUrl: '/cases/case1/slide-1.webp'
             },
             {
               id: 2,
@@ -1203,7 +1203,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Local market targeting in Naples, Florida (~20k residents)',
               category: 'screenshot',
               placeholderText: 'Initial profile state: 0 followers, tight demographic market',
-              imageUrl: '/cases/case1/slide-2.png'
+              imageUrl: '/cases/case1/slide-2.webp'
             },
             {
               id: 3,
@@ -1211,7 +1211,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Prioritizing sustainable audience-creative fit over vanity metrics',
               category: 'analytics',
               placeholderText: 'Audience and creative split testing in Meta Ads',
-              imageUrl: '/cases/case1/slide-3.png'
+              imageUrl: '/cases/case1/slide-3.webp'
             },
             {
               id: 4,
@@ -1219,7 +1219,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '23 high-intent conversations at $4.57/lead converting into bookings',
               category: 'screenshot',
               placeholderText: 'Meta Ads and Direct dashboard showing high lead conversion',
-              imageUrl: '/cases/case1/slide-4.png'
+              imageUrl: '/cases/case1/slide-4.webp'
             },
             {
               id: 5,
@@ -1227,7 +1227,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Daily budget governance and pruning underperforming creatives',
               category: 'creative',
               placeholderText: 'Testing novel short-form video angles and demographic tiers',
-              imageUrl: '/cases/case1/slide-5.jpg'
+              imageUrl: '/cases/case1/slide-5.webp'
             },
             {
               id: 6,
@@ -1235,7 +1235,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '33 inquiries, 5 high-ticket new clients (15.2%), $420 average order value',
               category: 'result',
               placeholderText: 'Official client report: $200 spend, 5 clients, 10x ROAS',
-              imageUrl: '/cases/case1/slide-6.png'
+              imageUrl: '/cases/case1/slide-6.webp'
             },
             {
               id: 7,
@@ -1243,7 +1243,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '10X ROAS: Every $1 invested returned $10 in net client revenue',
               category: 'result',
               placeholderText: 'Verified ROAS documentation for period 09.01 – 09.30',
-              imageUrl: '/cases/case1/slide-7.png'
+              imageUrl: '/cases/case1/slide-7.webp'
             },
             {
               id: 8,
@@ -1251,7 +1251,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Controlled budget expansion (+15-20%) and testing secondary offers',
               category: 'analytics',
               placeholderText: 'Long-term customer acquisition strategy without burnout',
-              imageUrl: '/cases/case1/slide-8.png'
+              imageUrl: '/cases/case1/slide-8.webp'
             },
             {
               id: 9,
@@ -1259,7 +1259,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Predictable growth is not luck—it is precise calibration and testing',
               category: 'review',
               placeholderText: 'Why paid acquisition becomes a reliable revenue generator',
-              imageUrl: '/cases/case1/slide-9.png'
+              imageUrl: '/cases/case1/slide-9.webp'
             }
           ]
         },
@@ -1282,7 +1282,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'PMU artist case study based in Naples, Florida',
               category: 'creative',
               placeholderText: 'Off-season PMU client acquisition case cover',
-              imageUrl: '/cases/case2/slide-1.jpg'
+              imageUrl: '/cases/case2/slide-1.webp'
             },
             {
               id: 2,
@@ -1290,7 +1290,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Before/after pictures and calendar stories produced no bookings',
               category: 'screenshot',
               placeholderText: 'Prior SMM efforts lacking commercial conversion',
-              imageUrl: '/cases/case2/slide-2.jpg'
+              imageUrl: '/cases/case2/slide-2.webp'
             },
             {
               id: 3,
@@ -1298,7 +1298,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Phasing out low-margin services to scale permanent makeup',
               category: 'analytics',
               placeholderText: 'Single-service premium positioning framework',
-              imageUrl: '/cases/case2/slide-3.png'
+              imageUrl: '/cases/case2/slide-3.webp'
             },
             {
               id: 4,
@@ -1306,7 +1306,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Unifying organic SMM and targeted ads into one fluid system',
               category: 'creative',
               placeholderText: 'Defining ideal client avatars and the path to booking',
-              imageUrl: '/cases/case2/slide-4.png'
+              imageUrl: '/cases/case2/slide-4.webp'
             },
             {
               id: 5,
@@ -1314,7 +1314,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Local search engine capture as a vital channel for beauty services',
               category: 'screenshot',
               placeholderText: 'Local reviews management and local SEO in Naples',
-              imageUrl: '/cases/case2/slide-5.png'
+              imageUrl: '/cases/case2/slide-5.webp'
             },
             {
               id: 6,
@@ -1322,7 +1322,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Adapting to live analytics rather than waiting passively',
               category: 'analytics',
               placeholderText: 'Continuous split-testing and CPA tracking',
-              imageUrl: '/cases/case2/slide-6.png'
+              imageUrl: '/cases/case2/slide-6.webp'
             },
             {
               id: 7,
@@ -1330,7 +1330,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Replacing sterile price sheets with personalized consultations',
               category: 'screenshot',
               placeholderText: 'Inbox dialogue comparison and high-converting chat flows',
-              imageUrl: '/cases/case2/slide-7.png'
+              imageUrl: '/cases/case2/slide-7.webp'
             },
             {
               id: 8,
@@ -1338,7 +1338,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '+136 organic followers from scratch during the slowest local season',
               category: 'result',
               placeholderText: 'Final profile performance dashboard and first revenue figures',
-              imageUrl: '/cases/case2/slide-8.jpg'
+              imageUrl: '/cases/case2/slide-8.webp'
             },
             {
               id: 9,
@@ -1346,7 +1346,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Transitioning PMU into the primary revenue generator for the artist',
               category: 'review',
               placeholderText: 'High-season budget and booking expansion plan',
-              imageUrl: '/cases/case2/slide-9.png'
+              imageUrl: '/cases/case2/slide-9.webp'
             }
           ]
         },
@@ -1369,7 +1369,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Fixing the funnel when everything seemed fine on the surface',
               category: 'creative',
               placeholderText: 'EdTech language academy case study cover',
-              imageUrl: '/cases/case3/slide-1.png'
+              imageUrl: '/cases/case3/slide-1.webp'
             },
             {
               id: 2,
@@ -1377,7 +1377,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '1.5k followers, 138k reach, and influencer shoutouts without sales',
               category: 'analytics',
               placeholderText: 'Account metrics at the start of engagement',
-              imageUrl: '/cases/case3/slide-2.png'
+              imageUrl: '/cases/case3/slide-2.webp'
             },
             {
               id: 3,
@@ -1385,7 +1385,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Cold followers were unprepared to convert without structured proof',
               category: 'screenshot',
               placeholderText: 'Pinpointing buyer friction in the product offering',
-              imageUrl: '/cases/case3/slide-3.png'
+              imageUrl: '/cases/case3/slide-3.webp'
             },
             {
               id: 4,
@@ -1393,7 +1393,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Answering the burning question: “Why invest $200+ right here?”',
               category: 'creative',
               placeholderText: 'Customer decision pathway and strategic funnel map',
-              imageUrl: '/cases/case3/slide-4.png'
+              imageUrl: '/cases/case3/slide-4.webp'
             },
             {
               id: 5,
@@ -1401,7 +1401,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Replacing hollow claims with concrete student transformation stories',
               category: 'creative',
               placeholderText: 'Sample high-converting Reels and pedagogical breakdowns',
-              imageUrl: '/cases/case3/slide-5.jpg'
+              imageUrl: '/cases/case3/slide-5.webp'
             },
             {
               id: 6,
@@ -1409,7 +1409,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '“Not just a modern curriculum, but how it delivers your desired outcome”',
               category: 'creative',
               placeholderText: 'Converting academic features into emotional benefits',
-              imageUrl: '/cases/case3/slide-6.png'
+              imageUrl: '/cases/case3/slide-6.webp'
             },
             {
               id: 7,
@@ -1417,7 +1417,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'What is this? → Who is it for? → What pain does it resolve? → Why now?',
               category: 'creative',
               placeholderText: 'Daily strategic Stories architecture',
-              imageUrl: '/cases/case3/slide-7.png'
+              imageUrl: '/cases/case3/slide-7.webp'
             },
             {
               id: 8,
@@ -1425,7 +1425,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Awareness → Understanding → Value recognition → Trust → Purchase',
               category: 'analytics',
               placeholderText: 'Decision-making progression diagram',
-              imageUrl: '/cases/case3/slide-8.png'
+              imageUrl: '/cases/case3/slide-8.webp'
             },
             {
               id: 9,
@@ -1433,7 +1433,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: '289,491 reach, 3,880 active followers, and doubled course revenues',
               category: 'result',
               placeholderText: 'Account performance report demonstrating doubled revenue',
-              imageUrl: '/cases/case3/slide-9.png'
+              imageUrl: '/cases/case3/slide-9.webp'
             },
             {
               id: 10,
@@ -1441,7 +1441,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
               subtitle: 'Building communication entirely around what your buyer needs to decide',
               category: 'review',
               placeholderText: 'Strategic SMM philosophy demonstrated in the academy case',
-              imageUrl: '/cases/case3/slide-10.png'
+              imageUrl: '/cases/case3/slide-10.webp'
             }
           ]
         }

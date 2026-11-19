@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { triggerHaptic } from '../../utils/haptics'
 import { Reveal, Lines } from './ui/Reveal'
-import { Section, Kicker } from './ui/Section'
+import { Section } from './ui/Section'
 
 type ExpertiseViewMode = 'metrics' | 'markets' | 'team'
 
@@ -143,9 +143,6 @@ export const BdbExpertise: React.FC = () => {
   return (
     <Section id="expertise" theme="ink" labelledBy="expertise-title" className="section-y">
       <Reveal className="wrap text-center flex flex-col items-center">
-        <Kicker index="02" className="justify-center mb-10 text-pink opacity-100">
-          Досвід та експертиза
-        </Kicker>
         <h2 id="expertise-title" className="t-serif-xl text-pink max-w-[1100px]">
           <Lines lines={['Маркетинг, побудований', 'на досвіді, системі', 'та цифрах.']} />
         </h2>
@@ -192,13 +189,13 @@ export const BdbExpertise: React.FC = () => {
         className="wrap focus-visible:outline-offset-8"
       >
         {viewMode === 'metrics' && (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6">
             {EXPERTISE_METRICS.map((m, i) => (
               <li
                 key={m.id}
-                className={`py-10 lg:py-12 sm:pr-8 border-b border-paper/15 lg:border-b-0 ${
-                  i > 0 ? 'lg:border-l lg:border-paper/15 lg:pl-8' : ''
-                } ${i % 2 === 1 ? 'sm:pl-8 sm:border-l sm:border-paper/15 lg:pl-8' : ''}`}
+                className={`relative py-10 lg:py-12 border-b border-paper/15 lg:border-b-0 ${
+                  i % 2 === 1 ? 'sm:col-rule' : ''
+                } ${i > 0 ? 'lg:col-rule' : ''}`}
               >
                 <p className="t-ui text-pink">{m.tag}</p>
                 <p className="mt-8 flex items-baseline gap-3">
@@ -240,10 +237,9 @@ export const BdbExpertise: React.FC = () => {
 
         {viewMode === 'team' && (
           <ol>
-            {TEAM_ROLES.map((role, i) => (
+            {TEAM_ROLES.map((role) => (
               <li key={role.title} className="grid grid-cols-12 gap-x-6 gap-y-2 py-8 border-b border-paper/15">
-                <span className="col-span-2 sm:col-span-1 t-ui opacity-60 pt-2">{String(i + 1).padStart(2, '0')}</span>
-                <div className="col-span-10 sm:col-span-6">
+                <div className="col-span-12 sm:col-span-7">
                   <h3 className="t-display-m">{role.title}</h3>
                   <p className="t-serif mt-2 text-pink">{role.lead}</p>
                 </div>

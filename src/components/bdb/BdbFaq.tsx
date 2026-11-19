@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { triggerHaptic } from '../../utils/haptics'
 import { Reveal, Lines } from './ui/Reveal'
-import { Section, Kicker } from './ui/Section'
+import { Section } from './ui/Section'
 
 const FAQS = [
   {
@@ -45,14 +45,11 @@ export const BdbFaq: React.FC = () => {
       <div className="wrap grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-14">
         <Reveal className="lg:col-span-5">
           <div className="lg:sticky" style={{ top: 'calc(var(--header-h) + 40px)' }}>
-            <Kicker index="10" className="mb-8">
-              Часті запитання
-            </Kicker>
             <h2 id="faq-title">
-              <span className="t-display block">
+              <span className="t-display-m block">
                 <Lines lines={['Відповіді', 'на запитання,']} />
               </span>
-              <span className="t-serif-xl block text-pink mt-2">
+              <span className="t-serif-l block text-pink mt-2">
                 <Lines start={2} lines={['які виникають', 'найчастіше.']} />
               </span>
             </h2>
@@ -73,15 +70,12 @@ export const BdbFaq: React.FC = () => {
                     onClick={() => toggle(idx)}
                     className="w-full flex items-start justify-between gap-6 py-6 sm:py-7 text-left cursor-pointer group"
                   >
-                    <span className="flex gap-4 sm:gap-6">
-                      <span className="t-ui opacity-50 pt-2 tabular-nums">{String(idx + 1).padStart(2, '0')}</span>
-                      <span className="font-display font-extrabold uppercase text-[22px] sm:text-[28px] leading-[1.05] tracking-[-0.01em] group-hover:text-pink transition-colors">
+                                          <span className="font-display font-extrabold uppercase text-[22px] sm:text-[28px] leading-[1.05] tracking-[-0.01em] group-hover:text-pink transition-colors">
                         {item.q}
                       </span>
-                    </span>
                     <Plus
                       aria-hidden="true"
-                      className={`w-6 h-6 shrink-0 mt-1 transition-transform duration-500 ${open ? 'rotate-45 text-pink' : ''}`}
+                      className={`w-6 h-6 shrink-0 mt-1 transition-transform duration-300 ${open ? 'rotate-45 text-pink' : ''}`}
                       style={{ transitionTimingFunction: 'var(--ease-out-expo)' }}
                     />
                   </button>
@@ -91,11 +85,11 @@ export const BdbFaq: React.FC = () => {
                   role="region"
                   aria-labelledby={`faq-q-${idx}`}
                   inert={!open}
-                  className="grid transition-[grid-template-rows] duration-500"
+                  className="grid transition-[grid-template-rows] duration-300"
                   style={{ gridTemplateRows: open ? '1fr' : '0fr', transitionTimingFunction: 'var(--ease-out-expo)' }}
                 >
                   <div className="overflow-hidden">
-                    <p className="t-body-l opacity-80 pb-8 pl-[44px] sm:pl-[60px] max-w-[640px]">{item.a}</p>
+                    <p className="t-body-l opacity-80 pb-8 max-w-[640px]">{item.a}</p>
                   </div>
                 </div>
               </li>

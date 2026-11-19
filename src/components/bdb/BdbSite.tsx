@@ -15,7 +15,6 @@ import { BdbProcess } from './BdbProcess'
 import { BdbFaq } from './BdbFaq'
 import { BdbFooter } from './BdbFooter'
 import { BookingModal } from '../BookingModal'
-import { CustomCursor } from '../CustomCursor'
 import { DynamicBackgroundController } from '../DynamicBackgroundController'
 
 export const BdbSite: React.FC = () => {
@@ -46,7 +45,6 @@ export const BdbSite: React.FC = () => {
       <a href="#main-content" className="skip-link">Перейти до змісту</a>
 
       {/* Custom cursor (fine pointers only) */}
-      <CustomCursor />
 
       {/* Navbar theme sync — sections own their solid backgrounds */}
       <DynamicBackgroundController />

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Reveal, Lines } from './ui/Reveal'
-import { Section, Kicker } from './ui/Section'
+import { Section } from './ui/Section'
 
 const STEPS = [
   {
@@ -38,9 +38,6 @@ const STEPS = [
 export const BdbMethodology: React.FC = () => (
   <Section id="methodology" theme="paper" labelledBy="methodology-title" className="section-y">
     <Reveal className="wrap">
-      <Kicker index="05" className="mb-8">
-        Як я будую маркетингову систему
-      </Kicker>
       <h2 id="methodology-title">
         <span className="t-display block">
           <Lines lines={['Не починаю', 'з публікацій.']} />

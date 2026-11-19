@@ -168,7 +168,7 @@ export const BdbNavbar: React.FC<BdbNavbarProps> = ({ onOpenBooking }) => {
       >
         <nav aria-label="Мобільна навігація" className="wrap pt-6 pb-10 flex flex-col min-h-full">
           <ul>
-            {NAV_LINKS.map((l, i) => (
+            {NAV_LINKS.map((l) => (
               <li key={l.href} className="border-b border-paper/15">
                 <a
                   href={l.href}
@@ -176,7 +176,6 @@ export const BdbNavbar: React.FC<BdbNavbarProps> = ({ onOpenBooking }) => {
                   className="flex items-baseline justify-between gap-4 py-3.5"
                 >
                   <span className="t-display-m leading-none">{l.long}</span>
-                  <span className="t-ui opacity-50">{String(i + 1).padStart(2, '0')}</span>
                 </a>
               </li>
             ))}

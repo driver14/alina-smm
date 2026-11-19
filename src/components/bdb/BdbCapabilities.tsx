@@ -1,7 +1,7 @@
 import React from 'react'
 import { triggerHaptic } from '../../utils/haptics'
 import { Reveal, Lines } from './ui/Reveal'
-import { Section, Kicker } from './ui/Section'
+import { Section } from './ui/Section'
 
 interface BdbCapabilitiesProps {
   onOpenBooking: (service?: string, note?: string) => void
@@ -83,14 +83,11 @@ export const BdbCapabilities: React.FC<BdbCapabilitiesProps> = ({ onOpenBooking 
     <Section id="services" theme="paper" labelledBy="services-title" className="section-y">
       <Reveal className="wrap grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-10 items-end">
         <div className="lg:col-span-8">
-          <Kicker index="07" className="mb-8">
-            Послуги та вартість
-          </Kicker>
           <h2 id="services-title">
-            <span className="t-display block">
+            <span className="t-display-m block">
               <Lines lines={['Формати співпраці,']} />
             </span>
-            <span className="t-serif-xl block mt-2">
+            <span className="t-serif-l block mt-2">
               <Lines start={1} lines={['які можна адаптувати', 'під ваш бізнес.']} />
             </span>
           </h2>
@@ -112,8 +109,7 @@ export const BdbCapabilities: React.FC<BdbCapabilitiesProps> = ({ onOpenBooking 
         <ul>
           {SERVICES.map((s) => (
             <li key={s.id} className="group border-b border-ink/15 py-8 sm:py-10 grid grid-cols-12 gap-x-6 gap-y-4 items-start">
-              <span className="col-span-2 sm:col-span-1 t-ui opacity-60 pt-2">{s.number}</span>
-              <div className="col-span-10 sm:col-span-11 lg:col-span-6">
+              <div className="col-span-12 lg:col-span-6">
                 <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
                   <h3 className="t-display-m">{s.title}</h3>
                   {s.isFlagship && <span className="t-block t-ui !text-[11px] px-1.5 py-1">{s.tag}</span>}
@@ -122,7 +118,7 @@ export const BdbCapabilities: React.FC<BdbCapabilitiesProps> = ({ onOpenBooking 
                 <p className="mt-4 text-[15px] leading-[1.5] opacity-80 max-w-[560px]">{s.desc}</p>
                 <p className="mt-4 text-[13px] leading-[1.6] opacity-65 max-w-[560px]">{s.features.join(' · ')}</p>
               </div>
-              <div className="col-span-10 col-start-3 sm:col-span-11 sm:col-start-2 lg:col-span-5 lg:col-start-8 flex flex-wrap lg:flex-col items-baseline lg:items-end justify-between gap-4 lg:text-right">
+              <div className="col-span-12 lg:col-span-5 lg:col-start-8 flex flex-wrap lg:flex-col items-baseline lg:items-end justify-between gap-4 lg:text-right">
                 <div>
                   <p className="t-ui opacity-60">Орієнтовна вартість</p>
                   <p className="t-serif-l mt-1 whitespace-nowrap">{s.price}</p>
